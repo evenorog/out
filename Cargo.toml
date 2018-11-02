@@ -1,0 +1,15 @@
+[package]
+name = "out"
+version = "0.5.0"
+authors = ["evenorog <evenorog@gmail.com>"]
+description = "Provides functionality to get `n` items from a `&mut [T]`."
+documentation = "https://docs.rs/out"
+repository = "https://github.com/evenorog/out"
+readme = "README.md"
+license = "MIT/Apache-2.0"
+keywords = ["min", "max"]
+categories = ["algorithms", "no-std"]
+
+[badges]
+travis-ci = { repository = "evenorog/out" }
+maintenance = { status = "actively-developed" }
