@@ -13,3 +13,7 @@ categories = ["algorithms", "no-std"]
 [badges]
 travis-ci = { repository = "evenorog/out" }
 maintenance = { status = "actively-developed" }
+
+[features]
+default = ["use_std"]
+use_std = []
