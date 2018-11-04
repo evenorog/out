@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "0.5.1"
+version = "0.5.2"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides functionality to get `n` items from a `&mut [T]`."
 documentation = "https://docs.rs/out"
