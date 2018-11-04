@@ -1,7 +1,18 @@
 //! Provides functionality to get `n` items from a `&mut [T]`.
+//!
+//! This library can provide significant performance increase compared to sorting the whole list
+//! when `n` is relatively small.
+//!
+//! ```text
+//! N = 100, LEN = 1_000_000, RANGE = 1_000_000:
+//! test max           ... bench:   5,907,759 ns/iter (+/- 191,096)
+//! test max_unstable  ... bench:   5,792,875 ns/iter (+/- 106,412)
+//! test sort          ... bench:  67,507,274 ns/iter (+/- 958,881)
+//! test sort_unstable ... bench:  35,584,123 ns/iter (+/- 1,157,209)
+//! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/0.5.0")]
+#![doc(html_root_url = "https://docs.rs/out/0.5.1")]
 #![deny(
     bad_style,
     bare_trait_objects,
