@@ -32,7 +32,7 @@ extern crate out;
 
 fn main() {
     let mut v = [-5, 4, 1, -3, 2];
-    let max = out::max_unstable(&mut v, 3);
+    let max = out::max(&mut v, 3);
     assert_eq!(max, [1, 2, 4]);
 }
 ```
