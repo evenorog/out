@@ -5,10 +5,10 @@
 //!
 //! ```text
 //! N = 100, LEN = 1_000_000, RANGE = 1_000_000:
-//! test max           ... bench:   5,907,759 ns/iter (+/- 191,096)
-//! test max_unstable  ... bench:   5,792,875 ns/iter (+/- 106,412)
-//! test sort          ... bench:  67,507,274 ns/iter (+/- 958,881)
-//! test sort_unstable ... bench:  35,584,123 ns/iter (+/- 1,157,209)
+//! test max           ... bench:   5,483,288 ns/iter (+/- 231,299)
+//! test max_unstable  ... bench:   5,462,940 ns/iter (+/- 139,545)
+//! test sort          ... bench:  67,729,867 ns/iter (+/- 2,045,393)
+//! test sort_unstable ... bench:  35,710,133 ns/iter (+/- 983,608)
 //! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
@@ -72,38 +72,40 @@ pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// ```
 #[inline]
 #[cfg(feature = "use_std")]
-pub fn max_by<T>(v: &mut [T], mut n: usize, mut f: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
+pub fn max_by<T>(v: &mut [T], n: usize, mut f: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     if n == 0 {
         return &mut [];
     }
-    let (mut max, v) = v.split_at_mut(n);
+    let (mut max, mut v) = v.split_at_mut(n);
     max.sort_by(&mut f);
-    n -= 1;
-    for i in 0..v.len() {
+    let mut i = 0;
+    while i < v.len() {
         if f(&v[i], &max[0]) != Ordering::Greater {
-            continue;
-        } else if f(&v[i], &max[n / 2]) == Ordering::Greater {
+            i += 1;
+        } else if f(&v[i], &max[n - 1]) != Ordering::Less && i < v.len() - 1 {
             v.swap(i, 0);
-            mem::swap(&mut max[n], &mut v[0]);
-            let mut j = n;
-            if j != 0 {
-                while j != 0 && f(&max[j], &max[j - 1]) != Ordering::Greater {
-                    max.swap(j, j - 1);
-                    j -= 1;
-                }
-                unsafe {
-                    let len = max.len();
-                    let ptr = max.as_mut_ptr();
-                    max = slice::from_raw_parts_mut(ptr.add(1), len);
-                }
+            unsafe {
+                shift_slice_right(&mut max, &mut v, 1);
+            }
+        } else if f(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
+            v.swap(i, 0);
+            let mut j = n - 1;
+            mem::swap(&mut max[j], &mut v[0]);
+            while j > 0 && f(&max[j], &max[j - 1]) != Ordering::Greater {
+                max.swap(j, j - 1);
+                j -= 1;
+            }
+            unsafe {
+                shift_slice_right(&mut max, &mut v, 1);
             }
         } else {
-            mem::swap(&mut v[i], &mut max[0]);
             let mut j = 0;
-            while j < n && f(&max[j], &max[j + 1]) == Ordering::Greater {
+            mem::swap(&mut v[i], &mut max[j]);
+            while j < n - 1 && f(&max[j], &max[j + 1]) == Ordering::Greater {
                 max.swap(j, j + 1);
                 j += 1;
             }
+            i += 1;
         }
     }
     max
@@ -120,40 +122,42 @@ pub fn max_by<T>(v: &mut [T], mut n: usize, mut f: impl FnMut(&T, &T) -> Orderin
 #[inline]
 pub fn max_unstable_by<T>(
     v: &mut [T],
-    mut n: usize,
+    n: usize,
     mut f: impl FnMut(&T, &T) -> Ordering,
 ) -> &mut [T] {
     if n == 0 {
         return &mut [];
     }
-    let (mut max, v) = v.split_at_mut(n);
+    let (mut max, mut v) = v.split_at_mut(n);
     max.sort_unstable_by(&mut f);
-    n -= 1;
-    for i in 0..v.len() {
+    let mut i = 0;
+    while i < v.len() {
         if f(&v[i], &max[0]) != Ordering::Greater {
-            continue;
-        } else if f(&v[i], &max[n / 2]) == Ordering::Greater {
+            i += 1;
+        } else if f(&v[i], &max[n - 1]) != Ordering::Less && i < v.len() - 1 {
             v.swap(i, 0);
-            mem::swap(&mut max[n], &mut v[0]);
-            let mut j = n;
-            if j != 0 {
-                while j != 0 && f(&max[j], &max[j - 1]) == Ordering::Less {
-                    max.swap(j, j - 1);
-                    j -= 1;
-                }
-                unsafe {
-                    let len = max.len();
-                    let ptr = max.as_mut_ptr();
-                    max = slice::from_raw_parts_mut(ptr.add(1), len);
-                }
+            unsafe {
+                shift_slice_right(&mut max, &mut v, 1);
+            }
+        } else if f(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
+            v.swap(i, 0);
+            let mut j = n - 1;
+            mem::swap(&mut max[j], &mut v[0]);
+            while j > 0 && f(&max[j], &max[j - 1]) == Ordering::Less {
+                max.swap(j, j - 1);
+                j -= 1;
+            }
+            unsafe {
+                shift_slice_right(&mut max, &mut v, 1);
             }
         } else {
-            mem::swap(&mut v[i], &mut max[0]);
             let mut j = 0;
-            while j < n && f(&max[j], &max[j + 1]) == Ordering::Greater {
+            mem::swap(&mut v[i], &mut max[j]);
+            while j < n - 1 && f(&max[j], &max[j + 1]) == Ordering::Greater {
                 max.swap(j, j + 1);
                 j += 1;
             }
+            i += 1;
         }
     }
     max
@@ -188,4 +192,14 @@ pub fn max_unstable_by_key<T, K: Ord>(
     mut f: impl FnMut(&T) -> K,
 ) -> &mut [T] {
     max_unstable_by(v, n, |a, b| f(a).cmp(&f(b)))
+}
+
+#[inline]
+unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T], count: usize) {
+    let len = left.len();
+    let ptr = left.as_mut_ptr();
+    *left = slice::from_raw_parts_mut(ptr.add(count), len);
+    let len = right.len();
+    let ptr = right.as_mut_ptr();
+    *right = slice::from_raw_parts_mut(ptr.add(count), len - count);
 }

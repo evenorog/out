@@ -20,3 +20,5 @@ use_std = []
 
 [dev-dependencies]
 rand = "0.5"
+quickcheck = "0.7"
+quickcheck_macros = "0.7"
