@@ -10,10 +10,10 @@ when `n` is relatively small.
 
 ```
 N = 100, LEN = 1_000_000, RANGE = 1_000_000:
-test max           ... bench:   5,483,288 ns/iter (+/- 231,299)
-test max_unstable  ... bench:   5,462,940 ns/iter (+/- 139,545)
-test sort          ... bench:  67,729,867 ns/iter (+/- 2,045,393)
-test sort_unstable ... bench:  35,710,133 ns/iter (+/- 983,608)
+test max           ... bench:   1,000,216 ns/iter (+/- 41,060)
+test max_unstable  ... bench:     997,303 ns/iter (+/- 36,817)
+test sort          ... bench:  61,034,315 ns/iter (+/- 1,042,745)
+test sort_unstable ... bench:  30,451,385 ns/iter (+/- 289,475)
 ```
 
 ## Examples
