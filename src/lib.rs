@@ -12,7 +12,7 @@
 //! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/0.5.3")]
+#![doc(html_root_url = "https://docs.rs/out/0.5.4")]
 #![deny(
     bad_style,
     bare_trait_objects,
