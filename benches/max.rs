@@ -4,6 +4,7 @@ extern crate out;
 extern crate rand;
 extern crate test;
 
+use std::collections::BinaryHeap;
 use rand::prelude::*;
 
 const N: usize = 100;
@@ -54,5 +55,14 @@ fn sort_unstable(b: &mut test::Bencher) {
         let mut v = v.clone();
         v.sort_unstable();
         test::black_box(&v[..N]);
+    });
+}
+
+#[bench]
+fn binary_heap(b: &mut test::Bencher) {
+    let v = create_random_vec();
+    b.iter(|| {
+        let heap = BinaryHeap::from(v.clone());
+        test::black_box(heap.into_iter().take(N).collect::<Vec<_>>());
     });
 }

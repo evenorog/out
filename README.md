@@ -5,15 +5,16 @@
 
 Provides functionality to get `n` items from a `&mut [T]`.
 
-This library can provide significant performance increase compared to sorting the whole list
-when `n` is relatively small.
+This library can provide significant performance increase compared to sorting or 
+converting to a heap when `n` is relatively small.
 
 ```
 N = 100, LEN = 1_000_000, RANGE = 1_000_000:
-test max           ... bench:   1,000,216 ns/iter (+/- 41,060)
-test max_unstable  ... bench:     997,303 ns/iter (+/- 36,817)
-test sort          ... bench:  61,034,315 ns/iter (+/- 1,042,745)
-test sort_unstable ... bench:  30,451,385 ns/iter (+/- 289,475)
+test binary_heap   ... bench:   6,832,200 ns/iter (+/- 41,693)
+test max           ... bench:     993,996 ns/iter (+/- 20,123)
+test max_unstable  ... bench:     992,648 ns/iter (+/- 26,116)
+test sort          ... bench:  60,826,874 ns/iter (+/- 2,721,114)
+test sort_unstable ... bench:  29,974,802 ns/iter (+/- 203,214)
 ```
 
 ## Examples
