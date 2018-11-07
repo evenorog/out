@@ -4,8 +4,8 @@ extern crate out;
 extern crate rand;
 extern crate test;
 
-use std::collections::BinaryHeap;
 use rand::prelude::*;
+use std::collections::BinaryHeap;
 
 const N: usize = 100;
 const LEN: usize = 1_000_000;

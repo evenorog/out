@@ -5,15 +5,15 @@
 //!
 //! ```text
 //! N = 100, LEN = 1_000_000, RANGE = 1_000_000:
-//! test binary_heap   ... bench:   6,832,200 ns/iter (+/- 41,693)
-//! test max           ... bench:     993,996 ns/iter (+/- 20,123)
-//! test max_unstable  ... bench:     992,648 ns/iter (+/- 26,116)
-//! test sort          ... bench:  60,826,874 ns/iter (+/- 2,721,114)
-//! test sort_unstable ... bench:  29,974,802 ns/iter (+/- 203,214)
+//! test binary_heap   ... bench:   6,706,060 ns/iter (+/- 102,080)
+//! test max           ... bench:     846,891 ns/iter (+/- 19,960)
+//! test max_unstable  ... bench:     844,215 ns/iter (+/- 18,365)
+//! test sort          ... bench:  62,280,523 ns/iter (+/- 997,028)
+//! test sort_unstable ... bench:  34,822,256 ns/iter (+/- 3,047,204)
 //! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/0.5.4")]
+#![doc(html_root_url = "https://docs.rs/out/0.5.5")]
 #![deny(
     bad_style,
     bare_trait_objects,
@@ -73,28 +73,25 @@ pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// ```
 #[inline]
 #[cfg(feature = "use_std")]
-pub fn max_by<T>(v: &mut [T], n: usize, mut f: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
+pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     if n == 0 {
         return &mut [];
     }
     let (mut max, mut v) = v.split_at_mut(n);
-    max.sort_by(&mut f);
+    max.sort_by(&mut cmp);
     let mut i = 0;
     while i < v.len() {
-        if f(&v[i], &max[0]) != Ordering::Greater {
+        if cmp(&v[i], &max[0]) != Ordering::Greater {
             i += 1;
-        } else if f(&v[i], &max[n - 1]) != Ordering::Less && i < v.len() - 1 {
-            v.swap(i, 0);
-            unsafe {
-                shift_slice_right(&mut max, &mut v, 1);
-            }
-        } else if f(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
+        } else if cmp(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
             v.swap(i, 0);
             let mut j = n - 1;
-            mem::swap(&mut max[j], &mut v[0]);
-            while j > 0 && f(&max[j], &max[j - 1]) != Ordering::Greater {
-                max.swap(j, j - 1);
-                j -= 1;
+            if cmp(&max[j], &v[0]) == Ordering::Greater {
+                mem::swap(&mut max[j], &mut v[0]);
+                while cmp(&max[j], &max[j - 1]) == Ordering::Less {
+                    max.swap(j, j - 1);
+                    j -= 1;
+                }
             }
             unsafe {
                 shift_slice_right(&mut max, &mut v, 1);
@@ -102,7 +99,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut f: impl FnMut(&T, &T) -> Ordering) -
         } else {
             let mut j = 0;
             mem::swap(&mut v[i], &mut max[j]);
-            while j < n - 1 && f(&max[j], &max[j + 1]) == Ordering::Greater {
+            while j < n - 1 && cmp(&max[j], &max[j + 1]) == Ordering::Greater {
                 max.swap(j, j + 1);
                 j += 1;
             }
@@ -124,29 +121,26 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut f: impl FnMut(&T, &T) -> Ordering) -
 pub fn max_unstable_by<T>(
     v: &mut [T],
     n: usize,
-    mut f: impl FnMut(&T, &T) -> Ordering,
+    mut cmp: impl FnMut(&T, &T) -> Ordering,
 ) -> &mut [T] {
     if n == 0 {
         return &mut [];
     }
     let (mut max, mut v) = v.split_at_mut(n);
-    max.sort_unstable_by(&mut f);
+    max.sort_unstable_by(&mut cmp);
     let mut i = 0;
     while i < v.len() {
-        if f(&v[i], &max[0]) != Ordering::Greater {
+        if cmp(&v[i], &max[0]) != Ordering::Greater {
             i += 1;
-        } else if f(&v[i], &max[n - 1]) != Ordering::Less && i < v.len() - 1 {
-            v.swap(i, 0);
-            unsafe {
-                shift_slice_right(&mut max, &mut v, 1);
-            }
-        } else if f(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
+        } else if cmp(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
             v.swap(i, 0);
             let mut j = n - 1;
-            mem::swap(&mut max[j], &mut v[0]);
-            while j > 0 && f(&max[j], &max[j - 1]) == Ordering::Less {
-                max.swap(j, j - 1);
-                j -= 1;
+            if cmp(&max[j], &v[0]) == Ordering::Greater {
+                mem::swap(&mut max[j], &mut v[0]);
+                while cmp(&max[j], &max[j - 1]) == Ordering::Less {
+                    max.swap(j, j - 1);
+                    j -= 1;
+                }
             }
             unsafe {
                 shift_slice_right(&mut max, &mut v, 1);
@@ -154,7 +148,7 @@ pub fn max_unstable_by<T>(
         } else {
             let mut j = 0;
             mem::swap(&mut v[i], &mut max[j]);
-            while j < n - 1 && f(&max[j], &max[j + 1]) == Ordering::Greater {
+            while j < n - 1 && cmp(&max[j], &max[j + 1]) == Ordering::Greater {
                 max.swap(j, j + 1);
                 j += 1;
             }
@@ -164,7 +158,7 @@ pub fn max_unstable_by<T>(
     max
 }
 
-/// Get the `n` largest items decided by a key generated by `f`.
+/// Get the `n` largest items decided by a key generated by `cmp`.
 ///
 /// # Examples
 /// ```
@@ -174,11 +168,11 @@ pub fn max_unstable_by<T>(
 /// ```
 #[inline]
 #[cfg(feature = "use_std")]
-pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
-    max_by(v, n, |a, b| f(a).cmp(&f(b)))
+pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T) -> K) -> &mut [T] {
+    max_by(v, n, |a, b| cmp(a).cmp(&cmp(b)))
 }
 
-/// Get the `n` largest items decided by a key generated by `f`.
+/// Get the `n` largest items decided by a key generated by `cmp`.
 ///
 /// # Examples
 /// ```
@@ -190,9 +184,9 @@ pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) 
 pub fn max_unstable_by_key<T, K: Ord>(
     v: &mut [T],
     n: usize,
-    mut f: impl FnMut(&T) -> K,
+    mut cmp: impl FnMut(&T) -> K,
 ) -> &mut [T] {
-    max_unstable_by(v, n, |a, b| f(a).cmp(&f(b)))
+    max_unstable_by(v, n, |a, b| cmp(a).cmp(&cmp(b)))
 }
 
 #[inline]

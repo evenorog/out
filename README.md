@@ -10,11 +10,11 @@ converting to a heap when `n` is relatively small.
 
 ```
 N = 100, LEN = 1_000_000, RANGE = 1_000_000:
-test binary_heap   ... bench:   6,832,200 ns/iter (+/- 41,693)
-test max           ... bench:     993,996 ns/iter (+/- 20,123)
-test max_unstable  ... bench:     992,648 ns/iter (+/- 26,116)
-test sort          ... bench:  60,826,874 ns/iter (+/- 2,721,114)
-test sort_unstable ... bench:  29,974,802 ns/iter (+/- 203,214)
+test binary_heap   ... bench:   6,706,060 ns/iter (+/- 102,080)
+test max           ... bench:     846,891 ns/iter (+/- 19,960)
+test max_unstable  ... bench:     844,215 ns/iter (+/- 18,365)
+test sort          ... bench:  62,280,523 ns/iter (+/- 997,028)
+test sort_unstable ... bench:  34,822,256 ns/iter (+/- 3,047,204)
 ```
 
 ## Examples

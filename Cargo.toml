@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "0.5.4"
+version = "0.5.5"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides functionality to get `n` items from a `&mut [T]`."
 documentation = "https://docs.rs/out"
@@ -13,6 +13,9 @@ categories = ["algorithms", "no-std"]
 [badges]
 travis-ci = { repository = "evenorog/out" }
 maintenance = { status = "actively-developed" }
+
+[profile.bench]
+lto = true
 
 [features]
 default = ["use_std"]
