@@ -83,36 +83,36 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
     if n == 0 {
         return &mut [];
     }
-    let (mut max, mut v) = v.split_at_mut(n);
-    max.sort_by(&mut cmp);
+    let (mut left, mut right) = v.split_at_mut(n);
+    left.sort_by(&mut cmp);
     let mut i = 0;
-    while i < v.len() {
-        if cmp(&v[i], &max[0]) == Ordering::Less {
+    while i < right.len() {
+        if cmp(&right[i], &left[0]) == Ordering::Less {
             i += 1;
-        } else if cmp(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
-            v.swap(i, 0);
+        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater && i < right.len() {
+            right.swap(i, 0);
             let mut j = n - 1;
-            if cmp(&max[j], &v[0]) == Ordering::Greater {
-                mem::swap(&mut max[j], &mut v[0]);
-                while cmp(&max[j], &max[j - 1]) == Ordering::Less {
-                    max.swap(j, j - 1);
+            if cmp(&left[j], &right[0]) == Ordering::Greater {
+                mem::swap(&mut left[j], &mut right[0]);
+                while cmp(&left[j], &left[j - 1]) == Ordering::Less {
+                    left.swap(j, j - 1);
                     j -= 1;
                 }
             }
             unsafe {
-                shift_slice_right(&mut max, &mut v, 1);
+                shift_slice_right(&mut left, &mut right, 1);
             }
         } else {
             let mut j = 0;
-            mem::swap(&mut v[i], &mut max[j]);
-            while j < n - 1 && cmp(&max[j], &max[j + 1]) != Ordering::Less {
-                max.swap(j, j + 1);
+            mem::swap(&mut right[i], &mut left[j]);
+            while j < n - 1 && cmp(&left[j], &left[j + 1]) != Ordering::Less {
+                left.swap(j, j + 1);
                 j += 1;
             }
             i += 1;
         }
     }
-    max
+    left
 }
 
 /// Get the `n` largest items with a comparator function.
@@ -134,36 +134,36 @@ pub fn max_unstable_by<T>(
     if n == 0 {
         return &mut [];
     }
-    let (mut max, mut v) = v.split_at_mut(n);
-    max.sort_unstable_by(&mut cmp);
+    let (mut left, mut right) = v.split_at_mut(n);
+    left.sort_unstable_by(&mut cmp);
     let mut i = 0;
-    while i < v.len() {
-        if cmp(&v[i], &max[0]) != Ordering::Greater {
+    while i < right.len() {
+        if cmp(&right[i], &left[0]) != Ordering::Greater {
             i += 1;
-        } else if cmp(&v[i], &max[n / 2]) == Ordering::Greater && i < v.len() - 1 {
-            v.swap(i, 0);
+        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater && i < right.len() {
+            right.swap(i, 0);
             let mut j = n - 1;
-            if cmp(&max[j], &v[0]) == Ordering::Greater {
-                mem::swap(&mut max[j], &mut v[0]);
-                while cmp(&max[j], &max[j - 1]) == Ordering::Less {
-                    max.swap(j, j - 1);
+            if cmp(&left[j], &right[0]) == Ordering::Greater {
+                mem::swap(&mut left[j], &mut right[0]);
+                while cmp(&left[j], &left[j - 1]) == Ordering::Less {
+                    left.swap(j, j - 1);
                     j -= 1;
                 }
             }
             unsafe {
-                shift_slice_right(&mut max, &mut v, 1);
+                shift_slice_right(&mut left, &mut right, 1);
             }
         } else {
             let mut j = 0;
-            mem::swap(&mut v[i], &mut max[j]);
-            while j < n - 1 && cmp(&max[j], &max[j + 1]) == Ordering::Greater {
-                max.swap(j, j + 1);
+            mem::swap(&mut right[i], &mut left[j]);
+            while j < n - 1 && cmp(&left[j], &left[j + 1]) == Ordering::Greater {
+                left.swap(j, j + 1);
                 j += 1;
             }
             i += 1;
         }
     }
-    max
+    left
 }
 
 /// Get the `n` largest items with a key extraction function.
