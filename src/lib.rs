@@ -1,7 +1,8 @@
-//! Provides functionality to get `n` items from a `&mut [T]`.
+//! Provides functionality to get the `n` largest items from a `&mut [T]`.
 //!
-//! This library can provide significant performance increase compared to sorting the whole list
-//! when `n` is relatively small.
+//! This library can provide significant performance increase compared to sorting or
+//! converting to a heap when `n` is relatively small.
+//! The unstable methods can be used without the standard library.
 //!
 //! ```text
 //! n = 100, len = 1_000_000:
@@ -13,7 +14,7 @@
 //! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/0.5.7")]
+#![doc(html_root_url = "https://docs.rs/out/0.5.8")]
 #![deny(
     bad_style,
     bare_trait_objects,

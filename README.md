@@ -3,10 +3,11 @@
 [![Crates.io](https://img.shields.io/crates/v/out.svg)](https://crates.io/crates/out)
 [![Docs](https://docs.rs/out/badge.svg)](https://docs.rs/out)
 
-Provides functionality to get `n` items from a `&mut [T]`.
+Provides functionality to get the `n` largest items from a `&mut [T]`.
 
-This library can provide significant performance increase compared to sorting or 
+This library can provide significant performance increase compared to sorting or
 converting to a heap when `n` is relatively small.
+The unstable methods can be used without the standard library.
 
 ```
 n = 100, len = 1_000_000:
