@@ -204,10 +204,13 @@ pub fn max_unstable_by_key<T, K: Ord>(
     max_unstable_by(v, n, |a, b| cmp(a).cmp(&cmp(b)))
 }
 
-/// Grow the left slice while shrinking the right slice by `count`.
+/// Shift the left slice to the right while shrinking the right slice by `count`.
+///
+/// This leaves the first `count` items outside the slices,
+/// so be careful so the slices does not own their data and causes memory leaks.
 ///
 /// ```text
-/// [a, b][c, d, e] -> [a, b, c][d, e]
+/// [a, b][c, d, e] -> a [b, c][d, e]
 /// ```
 #[inline]
 unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T], count: usize) {
