@@ -4,16 +4,16 @@
 //! when `n` is relatively small.
 //!
 //! ```text
-//! N = 100, LEN = 1_000_000, RANGE = 1_000_000:
-//! test binary_heap   ... bench:   6,706,060 ns/iter (+/- 102,080)
-//! test max           ... bench:     846,891 ns/iter (+/- 19,960)
-//! test max_unstable  ... bench:     844,215 ns/iter (+/- 18,365)
-//! test sort          ... bench:  62,280,523 ns/iter (+/- 997,028)
-//! test sort_unstable ... bench:  34,822,256 ns/iter (+/- 3,047,204)
+//! n = 100, len = 1_000_000:
+//! test binary_heap   ... bench:   6,599,355 ns/iter (+/- 84,674)
+//! test max           ... bench:     669,726 ns/iter (+/- 13,595)
+//! test max_unstable  ... bench:     635,435 ns/iter (+/- 9,683)
+//! test sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
+//! test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
 //! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/0.5.5")]
+#![doc(html_root_url = "https://docs.rs/out/0.5.7")]
 #![deny(
     bad_style,
     bare_trait_objects,
@@ -87,6 +87,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
     left.sort_by(&mut cmp);
     let mut i = 0;
     while i < right.len() {
+        // Using `==` seems to be 10-30% faster than `!=`.
         if cmp(&right[i], &left[0]) == Ordering::Less {
             i += 1;
         } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater && i < right.len() {
@@ -105,7 +106,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         } else {
             let mut j = 0;
             mem::swap(&mut right[i], &mut left[j]);
-            while j < n - 1 && cmp(&left[j], &left[j + 1]) != Ordering::Less {
+            while j < n - 1 && cmp(&left[j + 1], &left[j]) == Ordering::Less {
                 left.swap(j, j + 1);
                 j += 1;
             }
@@ -138,7 +139,8 @@ pub fn max_unstable_by<T>(
     left.sort_unstable_by(&mut cmp);
     let mut i = 0;
     while i < right.len() {
-        if cmp(&right[i], &left[0]) != Ordering::Greater {
+        // Using `==` seems to be 10-30% faster than `!=`.
+        if cmp(&left[0], &right[i]) == Ordering::Greater {
             i += 1;
         } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater && i < right.len() {
             right.swap(i, 0);

@@ -9,14 +9,11 @@ use std::collections::BinaryHeap;
 
 const N: usize = 100;
 const LEN: usize = 1_000_000;
-const RANGE: i32 = 1_000_000;
 
 fn create_random_vec() -> Vec<i32> {
-    let mut rng = SmallRng::from_seed([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-    let mut v = Vec::with_capacity(LEN);
-    for _ in 0..LEN {
-        v.push(rng.gen_range(-RANGE, RANGE));
-    }
+    let mut rng = SmallRng::seed_from_u64(0);
+    let mut v: Vec<_> = (0..LEN as i32).collect();
+    v.shuffle(&mut rng);
     v
 }
 

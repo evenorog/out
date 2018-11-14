@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "0.5.6"
+version = "0.5.7"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides functionality to get `n` items from a `&mut [T]`."
 documentation = "https://docs.rs/out"
@@ -22,6 +22,6 @@ default = ["use_std"]
 use_std = []
 
 [dev-dependencies]
-rand = "0.5"
+rand = "0.6"
 quickcheck = "0.7"
 quickcheck_macros = "0.7"

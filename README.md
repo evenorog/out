@@ -9,12 +9,12 @@ This library can provide significant performance increase compared to sorting or
 converting to a heap when `n` is relatively small.
 
 ```
-N = 100, LEN = 1_000_000, RANGE = 1_000_000:
-test binary_heap   ... bench:   6,706,060 ns/iter (+/- 102,080)
-test max           ... bench:     846,891 ns/iter (+/- 19,960)
-test max_unstable  ... bench:     844,215 ns/iter (+/- 18,365)
-test sort          ... bench:  62,280,523 ns/iter (+/- 997,028)
-test sort_unstable ... bench:  34,822,256 ns/iter (+/- 3,047,204)
+n = 100, len = 1_000_000:
+test binary_heap   ... bench:   6,599,355 ns/iter (+/- 84,674)
+test max           ... bench:     669,726 ns/iter (+/- 13,595)
+test max_unstable  ... bench:     635,435 ns/iter (+/- 9,683)
+test sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
+test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
 ```
 
 ## Examples
