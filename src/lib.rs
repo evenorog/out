@@ -107,7 +107,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         } else {
             let mut j = 0;
             mem::swap(&mut right[i], &mut left[j]);
-            while j < n - 1 && cmp(&left[j + 1], &left[j]) == Ordering::Less {
+            while j < n - 1 && cmp(&left[j], &left[j + 1]) != Ordering::Less {
                 left.swap(j, j + 1);
                 j += 1;
             }
