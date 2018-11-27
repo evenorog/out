@@ -14,7 +14,7 @@
 //! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/0.5.9")]
+#![doc(html_root_url = "https://docs.rs/out/0.5.10")]
 #![deny(
     bad_style,
     bare_trait_objects,
@@ -91,7 +91,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         // Using `==` seems to be 10-30% faster than `!=`.
         if cmp(&right[i], &left[0]) == Ordering::Less {
             i += 1;
-        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater && i < right.len() {
+        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
             right.swap(i, 0);
             let mut j = n - 1;
             if cmp(&left[j], &right[0]) == Ordering::Greater {
@@ -143,7 +143,7 @@ pub fn max_unstable_by<T>(
         // Using `==` seems to be 10-30% faster than `!=`.
         if cmp(&left[0], &right[i]) == Ordering::Greater {
             i += 1;
-        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater && i < right.len() {
+        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
             right.swap(i, 0);
             let mut j = n - 1;
             if cmp(&left[j], &right[0]) == Ordering::Greater {
