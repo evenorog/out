@@ -25,17 +25,9 @@
 )]
 
 #[cfg(not(feature = "use_std"))]
-use core::cmp::Ordering;
-#[cfg(not(feature = "use_std"))]
-use core::mem;
-#[cfg(not(feature = "use_std"))]
-use core::slice;
+use core::{cmp::Ordering, mem, slice};
 #[cfg(feature = "use_std")]
-use std::cmp::Ordering;
-#[cfg(feature = "use_std")]
-use std::mem;
-#[cfg(feature = "use_std")]
-use std::slice;
+use std::{cmp::Ordering, mem, slice};
 
 /// Get the `n` largest items.
 ///

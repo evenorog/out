@@ -1,9 +1,6 @@
 #![feature(plugin)]
 #![plugin(quickcheck_macros)]
 
-extern crate out;
-extern crate quickcheck;
-
 use quickcheck::TestResult;
 
 const N: usize = 3;

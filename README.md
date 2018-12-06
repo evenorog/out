@@ -30,8 +30,6 @@ out = "0.5"
 And this to `main.rs`:
 
 ```rust
-extern crate out;
-
 fn main() {
     let mut v = [-5, 4, 1, -3, 2];
     let max = out::max(&mut v, 3);

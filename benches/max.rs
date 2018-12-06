@@ -1,7 +1,5 @@
 #![feature(test)]
 
-extern crate out;
-extern crate rand;
 extern crate test;
 
 use rand::prelude::*;
