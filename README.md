@@ -5,6 +5,12 @@
 
 Provides functionality to get the `n` largest items from a `&mut [T]`.
 
+```rust
+let mut v = [-5, 4, 1, -3, 2];
+let max = out::max(&mut v, 3);
+assert_eq!(max, [1, 2, 4]);
+```
+
 This library can provide significant performance increase compared to sorting or
 converting to a heap when `n` is relatively small.
 The unstable methods can be used without the standard library.
@@ -16,25 +22,6 @@ test max           ... bench:     669,726 ns/iter (+/- 13,595)
 test max_unstable  ... bench:     635,435 ns/iter (+/- 9,683)
 test sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
 test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
-```
-
-## Examples
-
-Add this to `Cargo.toml`:
-
-```toml
-[dependencies]
-out = "0.5"
-```
-
-And this to `main.rs`:
-
-```rust
-fn main() {
-    let mut v = [-5, 4, 1, -3, 2];
-    let max = out::max(&mut v, 3);
-    assert_eq!(max, [1, 2, 4]);
-}
 ```
 
 ## License

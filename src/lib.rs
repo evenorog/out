@@ -1,5 +1,11 @@
 //! Provides functionality to get the `n` largest items from a `&mut [T]`.
 //!
+//! ```
+//! let mut v = [-5, 4, 1, -3, 2];
+//! let max = out::max(&mut v, 3);
+//! assert_eq!(max, [1, 2, 4]);
+//! ```
+//!
 //! This library can provide significant performance increase compared to sorting or
 //! converting to a heap when `n` is relatively small.
 //! The unstable methods can be used without the standard library.
@@ -14,7 +20,7 @@
 //! ```
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/0.5.10")]
+#![doc(html_root_url = "https://docs.rs/out/0.5.11")]
 #![deny(
     bad_style,
     bare_trait_objects,
