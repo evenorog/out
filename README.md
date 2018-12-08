@@ -24,7 +24,7 @@ test sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
 test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
 ```
 
-## License
+### License
 
 Licensed under either of
 
