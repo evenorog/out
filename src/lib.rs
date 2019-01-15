@@ -48,7 +48,7 @@ use std::{cmp::Ordering, mem, slice};
 #[inline]
 #[cfg(feature = "use_std")]
 pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
-    max_by(v, n, |a, b| a.cmp(b))
+    max_by(v, n, T::cmp)
 }
 
 /// Get the `n` largest items.
@@ -63,7 +63,7 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// ```
 #[inline]
 pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
-    max_unstable_by(v, n, |a, b| a.cmp(b))
+    max_unstable_by(v, n, T::cmp)
 }
 
 /// Get the `n` largest items with a comparator function.
