@@ -6,11 +6,13 @@
 //! assert_eq!(max, [1, 2, 4]);
 //! ```
 //!
+//! It's worth noting that the largest item will be the last item in the slice that is returned.
 //! This library can provide significant performance increase compared to sorting or
 //! converting to a heap when `n` is relatively small.
-//! The unstable methods can be used without the standard library.
+//! In addition, the unstable methods can be used without
+//! the standard library by disabling the default features.
 //!
-//! n = 100, len = 1_000_000:
+//! n = `100`, len = `1_000_000`:
 //! ```text
 //! test binary_heap   ... bench:   6,599,355 ns/iter (+/- 84,674)
 //! test max           ... bench:     669,726 ns/iter (+/- 13,595)
