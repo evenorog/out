@@ -2,7 +2,7 @@ use quickcheck::{quickcheck, TestResult};
 
 const N: usize = 3;
 
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 quickcheck! {
     fn max(v: Vec<(i32, i32)>) -> TestResult {
         if v.len() < N {

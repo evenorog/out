@@ -19,8 +19,8 @@
 //! test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
 //! ```
 
-#![cfg_attr(not(feature = "use_std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/1.0.0")]
+#![cfg_attr(not(feature = "std"), no_std)]
+#![doc(html_root_url = "https://docs.rs/out/2.0.0")]
 #![deny(
     bad_style,
     bare_trait_objects,
@@ -30,9 +30,9 @@
     unused_qualifications
 )]
 
-#[cfg(not(feature = "use_std"))]
+#[cfg(not(feature = "std"))]
 use core::{cmp::Ordering, mem, slice};
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 use std::{cmp::Ordering, mem, slice};
 
 /// Get the `n` largest items.
@@ -46,7 +46,7 @@ use std::{cmp::Ordering, mem, slice};
 /// assert_eq!(max, [1, 2, 4]);
 /// ```
 #[inline]
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
     max_by(v, n, T::cmp)
 }
@@ -77,7 +77,7 @@ pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// assert_eq!(min, [1, -3, -5]);
 /// ```
 #[inline]
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     if n == 0 {
         return &mut [];
@@ -178,7 +178,7 @@ pub fn max_unstable_by<T>(
 /// assert_eq!(max, [-3, 4, -5]);
 /// ```
 #[inline]
-#[cfg(feature = "use_std")]
+#[cfg(feature = "std")]
 pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T) -> K) -> &mut [T] {
     max_by(v, n, |a, b| cmp(a).cmp(&cmp(b)))
 }

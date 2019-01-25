@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "1.0.0"
+version = "2.0.0"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides functionality to get the n largest items from a &mut [T]."
 documentation = "https://docs.rs/out"
@@ -20,8 +20,8 @@ maintenance = { status = "actively-developed" }
 lto = true
 
 [features]
-default = ["use_std"]
-use_std = []
+default = ["std"]
+std = []
 
 [dev-dependencies]
 rand = "0.6"
