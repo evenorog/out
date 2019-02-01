@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides functionality to get the n largest items from a &mut [T]."
 documentation = "https://docs.rs/out"
