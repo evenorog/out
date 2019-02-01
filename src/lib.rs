@@ -50,6 +50,9 @@ use std::{cmp::Ordering, mem, slice};
 ///
 /// This method is stable, i.e. it preserves the order of equal elements.
 ///
+/// # Panics
+/// Panics if `n > len`.
+///
 /// # Examples
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
@@ -66,6 +69,9 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
 ///
+/// # Panics
+/// Panics if `n > len`.
+///
 /// # Examples
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
@@ -80,6 +86,9 @@ pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// Get the `n` largest items with a comparator function.
 ///
 /// This method is stable, i.e. it preserves the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
 ///
 /// # Examples
 /// ```
@@ -129,6 +138,9 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 /// Get the `n` largest items with a comparator function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
 ///
 /// # Examples
 /// ```
@@ -182,6 +194,9 @@ pub fn max_unstable_by<T>(
 ///
 /// This method is stable, i.e. it preserves the order of equal elements.
 ///
+/// # Panics
+/// Panics if `n > len`.
+///
 /// # Examples
 /// ```
 /// let mut v = [-5_i32, 4, 1, -3, 2];
@@ -197,6 +212,9 @@ pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T) -> K
 /// Get the `n` largest items with a key extraction function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
 ///
 /// # Examples
 /// ```
