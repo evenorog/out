@@ -68,6 +68,7 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// Get the `n` largest items.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
+/// This method should be faster than `max` in most cases, and can be used with `no_std`.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -138,6 +139,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 /// Get the `n` largest items with a comparator function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
+/// This method should be faster than `max_unstable_by` in most cases, and can be used with `no_std`.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -212,6 +214,7 @@ pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T) -> K
 /// Get the `n` largest items with a key extraction function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
+/// This method should be faster than `max_unstable_by_key` in most cases, and can be used with `no_std`.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -232,9 +235,6 @@ pub fn max_unstable_by_key<T, K: Ord>(
 }
 
 /// Shift the left slice to the right while shrinking the right slice by `count`.
-///
-/// This leaves the first `count` items outside the slices,
-/// so be careful so the slices does not own their data and causes memory leaks.
 ///
 /// ```text
 /// [a, b][c, d, e] -> a [b, c][d, e]
