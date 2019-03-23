@@ -1,4 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg">
-    <text dx="3" fill="#007f9f" dominant-baseline="text-before-edge" font-size="125">out</text>
-    <text fill="#0092b7" dominant-baseline="text-before-edge" font-size="125">out</text>
+    <text fill="#0092b7" dominant-baseline="text-before-edge" font-size="135" font-family="Times New Roman" font-weight="lighter">out</text>
 </svg>
