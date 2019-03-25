@@ -1,4 +1,4 @@
-![out](out.svg)
+![out](out.svg?sanitize=true)
 
 [![Travis](https://travis-ci.org/evenorog/out.svg?branch=master)](https://travis-ci.org/evenorog/out)
 [![Crates.io](https://img.shields.io/crates/v/out.svg)](https://crates.io/crates/out)
