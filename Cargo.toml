@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides functionality to get the n largest items from a &mut [T]."
 documentation = "https://docs.rs/out"
@@ -15,9 +15,6 @@ edition = "2018"
 [badges]
 travis-ci = { repository = "evenorog/out" }
 maintenance = { status = "actively-developed" }
-
-[profile.bench]
-lto = true
 
 [features]
 default = ["std"]
