@@ -31,7 +31,7 @@
 //! ```
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![doc(html_root_url = "https://docs.rs/out/2.0.1")]
+#![doc(html_root_url = "https://docs.rs/out/latest")]
 #![deny(
     bad_style,
     bare_trait_objects,
@@ -41,10 +41,7 @@
     unused_qualifications
 )]
 
-#[cfg(not(feature = "std"))]
 use core::{cmp::Ordering, mem, slice};
-#[cfg(feature = "std")]
-use std::{cmp::Ordering, mem, slice};
 
 /// Get the `n` largest items.
 ///
@@ -107,7 +104,6 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
     left.sort_by(&mut cmp);
     let mut i = 0;
     while i < right.len() {
-        // Using `==` seems to be 10-30% faster than `!=`.
         if cmp(&right[i], &left[0]) == Ordering::Less {
             i += 1;
         } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
@@ -163,7 +159,6 @@ pub fn max_unstable_by<T>(
     left.sort_unstable_by(&mut cmp);
     let mut i = 0;
     while i < right.len() {
-        // Using `==` seems to be 10-30% faster than `!=`.
         if cmp(&left[0], &right[i]) == Ordering::Greater {
             i += 1;
         } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
