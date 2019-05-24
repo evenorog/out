@@ -36,6 +36,8 @@ test sort          ... bench: 716,240,206 ns/iter (+/- 23,188,586)
 test sort_unstable ... bench: 385,681,859 ns/iter (+/- 19,847,519)
 ```
 
+*Benchmarks done on openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM.*
+
 ## License
 
 Licensed under either of
