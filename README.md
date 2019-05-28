@@ -18,25 +18,35 @@ converting to a heap when `n` is relatively small compared to the length of the 
 In addition, the unstable methods can be used without
 the standard library by disabling the default features.
 
+## Benchmarks
+
 n = `100`, len = `1_000_000`:
+
 ```
+openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
+
 test binary_heap   ... bench:   6,599,355 ns/iter (+/- 84,674)
 test max           ... bench:     669,726 ns/iter (+/- 13,595)
 test max_unstable  ... bench:     635,435 ns/iter (+/- 9,683)
 test sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
 test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
-```
 
-n = `1000`, len = `10_000_000`:
-```
-test binary_heap   ... bench:  78,343,761 ns/iter (+/- 2,579,283)
-test max           ... bench:  14,970,673 ns/iter (+/- 580,660)
-test max_unstable  ... bench:  14,870,344 ns/iter (+/- 573,286)
-test sort          ... bench: 716,240,206 ns/iter (+/- 23,188,586)
-test sort_unstable ... bench: 385,681,859 ns/iter (+/- 19,847,519)
-```
+openSUSE Leap 15.0, i7-7700 @ 3.6GHz, and 32GiB RAM:
 
-*Benchmarks done on openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM.*
+test binary_heap   ... bench:   5,521,422 ns/iter (+/- 124,780) 
+test max           ... bench:     653,428 ns/iter (+/- 13,913) 
+test max_unstable  ... bench:     524,200 ns/iter (+/- 61,033) 
+test sort          ... bench:  41,428,917 ns/iter (+/- 486,681) 
+test sort_unstable ... bench:  26,124,912 ns/iter (+/- 439,856)
+
+Windows 10 Pro, i7-5820K @ 3.30GHz, and 16GiB RAM:
+
+test binary_heap   ... bench:   8,550,850 ns/iter (+/- 1,118,958)
+test max           ... bench:   2,282,062 ns/iter (+/- 564,063)
+test max_unstable  ... bench:   2,179,817 ns/iter (+/- 741,751)
+test sort          ... bench:  67,915,490 ns/iter (+/- 5,252,960)
+test sort_unstable ... bench:  34,022,120 ns/iter (+/- 3,745,490)
+```
 
 ## License
 
