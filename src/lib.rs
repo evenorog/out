@@ -25,7 +25,7 @@
 //! test sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
 //! test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
 //!
-//! openSUSE Leap 15.0, i7-7700 @ 3.6GHz, and 32GiB RAM:
+//! openSUSE Leap 15.0, i7-7700 @ 3.60GHz, and 32GiB RAM:
 //!
 //! test binary_heap   ... bench:   5,521,422 ns/iter (+/- 124,780)
 //! test max           ... bench:     653,428 ns/iter (+/- 13,913)
