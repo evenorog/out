@@ -3,8 +3,8 @@ use quickcheck_macros::quickcheck;
 
 const N: usize = 3;
 
-#[cfg(feature = "std")]
 #[quickcheck]
+#[cfg(feature = "alloc")]
 fn max(mut v: Vec<(i32, i32)>) -> TestResult {
     if v.len() < N {
         return TestResult::discard();

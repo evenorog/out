@@ -12,13 +12,13 @@ categories = ["algorithms", "no-std"]
 exclude = ["/.travis.yml"]
 edition = "2018"
 
+[features]
+default = ["alloc"]
+alloc = []
+
 [badges]
 travis-ci = { repository = "evenorog/out" }
 maintenance = { status = "actively-developed" }
-
-[features]
-default = ["std"]
-std = []
 
 [dev-dependencies]
 rand = { version = "0.7.0", features = ["small_rng"]}

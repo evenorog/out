@@ -42,7 +42,7 @@
 //! test sort_unstable ... bench:  34,022,120 ns/iter (+/- 3,745,490)
 //! ```
 
-#![cfg_attr(not(feature = "std"), no_std)]
+#![no_std]
 #![doc(html_root_url = "https://docs.rs/out/latest")]
 #![deny(
     bad_style,
@@ -52,6 +52,9 @@
     unused_import_braces,
     unused_qualifications
 )]
+
+#[cfg(feature = "alloc")]
+extern crate alloc;
 
 use core::{cmp::Ordering, mem, slice};
 
@@ -69,7 +72,7 @@ use core::{cmp::Ordering, mem, slice};
 /// assert_eq!(max, [1, 2, 4]);
 /// ```
 #[inline]
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
     max_by(v, n, T::cmp)
 }
@@ -77,7 +80,7 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// Get the `n` largest items.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
-/// This method should be faster than `max` in most cases, and can be used with `no_std`.
+/// This method should be faster than `max` in most cases.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -107,7 +110,7 @@ pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// assert_eq!(min, [1, -3, -5]);
 /// ```
 #[inline]
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     if n == 0 {
         return &mut [];
@@ -147,7 +150,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 /// Get the `n` largest items with a comparator function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
-/// This method should be faster than `max_by` in most cases, and can be used with `no_std`.
+/// This method should be faster than `max_by` in most cases.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -213,7 +216,7 @@ pub fn max_unstable_by<T>(
 /// assert_eq!(max, [-3, 4, -5]);
 /// ```
 #[inline]
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T) -> K) -> &mut [T] {
     max_by(v, n, |a, b| cmp(a).cmp(&cmp(b)))
 }
@@ -221,7 +224,7 @@ pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T) -> K
 /// Get the `n` largest items with a key extraction function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
-/// This method should be faster than `max_by_key` in most cases, and can be used with `no_std`.
+/// This method should be faster than `max_by_key` in most cases.
 ///
 /// # Panics
 /// Panics if `n > len`.
