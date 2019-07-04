@@ -147,7 +147,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 /// Get the `n` largest items with a comparator function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
-/// This method should be faster than `max_unstable_by` in most cases, and can be used with `no_std`.
+/// This method should be faster than `max_by` in most cases, and can be used with `no_std`.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -221,7 +221,7 @@ pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T) -> K
 /// Get the `n` largest items with a key extraction function.
 ///
 /// This method is not stable, i.e. it may not preserve the order of equal elements.
-/// This method should be faster than `max_unstable_by_key` in most cases, and can be used with `no_std`.
+/// This method should be faster than `max_by_key` in most cases, and can be used with `no_std`.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -246,6 +246,10 @@ pub fn max_unstable_by_key<T, K: Ord>(
 /// ```text
 /// [a, b][c, d, e] -> a [b, c][d, e]
 /// ```
+///
+/// # Safety
+/// The two slices must be next to each other and `count` can not be larger
+/// than the length of `right`.
 #[inline]
 unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T], count: usize) {
     let len = left.len();
