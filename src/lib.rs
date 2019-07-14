@@ -6,11 +6,8 @@
 //! assert_eq!(max, [1, 2, 4]);
 //! ```
 //!
-//! It's worth noting that the largest item will be the last item in the slice that is returned.
 //! This library can provide significant performance increase compared to sorting or
 //! converting to a heap when `n` is relatively small compared to the length of the slice.
-//! In addition, the unstable methods can be used without
-//! the standard library by disabling the default features.
 //!
 //! # Benchmarks
 //!
@@ -43,7 +40,7 @@
 //! ```
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/out/latest")]
+#![doc(html_root_url = "https://docs.rs/out/3.0.0")]
 #![deny(
     bad_style,
     bare_trait_objects,
