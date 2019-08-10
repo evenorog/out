@@ -129,7 +129,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
                 }
             }
             unsafe {
-                shift_slice_right(&mut left, &mut right, 1);
+                shift_slice_right(&mut left, &mut right);
             }
         } else {
             let mut j = 0;
@@ -184,7 +184,7 @@ pub fn max_unstable_by<T>(
                 }
             }
             unsafe {
-                shift_slice_right(&mut left, &mut right, 1);
+                shift_slice_right(&mut left, &mut right);
             }
         } else {
             let mut j = 0;
@@ -251,11 +251,11 @@ pub fn max_unstable_by_key<T, K: Ord>(
 /// The two slices must be next to each other and `count` can not be larger
 /// than the length of `right`.
 #[inline]
-unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T], count: usize) {
+unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T]) {
     let len = left.len();
     let ptr = left.as_mut_ptr();
-    *left = slice::from_raw_parts_mut(ptr.add(count), len);
+    *left = slice::from_raw_parts_mut(ptr.add(1), len);
     let len = right.len();
     let ptr = right.as_mut_ptr();
-    *right = slice::from_raw_parts_mut(ptr.add(count), len - count);
+    *right = slice::from_raw_parts_mut(ptr.add(1), len - 1);
 }
