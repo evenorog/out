@@ -34,6 +34,15 @@ fn max_unstable(b: &mut test::Bencher) {
 }
 
 #[bench]
+fn max_by_cached_key(b: &mut test::Bencher) {
+    let v = create_random_vec();
+    b.iter(|| {
+        let mut v = v.clone();
+        test::black_box(out::max_by_cached_key(&mut v, N, |&a| a));
+    });
+}
+
+#[bench]
 fn sort(b: &mut test::Bencher) {
     let v = create_random_vec();
     b.iter(|| {
@@ -49,6 +58,16 @@ fn sort_unstable(b: &mut test::Bencher) {
     b.iter(|| {
         let mut v = v.clone();
         v.sort_unstable();
+        test::black_box(&v[..N]);
+    });
+}
+
+#[bench]
+fn sort_by_cached_key(b: &mut test::Bencher) {
+    let v = create_random_vec();
+    b.iter(|| {
+        let mut v = v.clone();
+        v.sort_by_cached_key(|&a| a);
         test::black_box(&v[..N]);
     });
 }
