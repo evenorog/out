@@ -16,27 +16,27 @@
 //! ```text
 //! openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
 //!
-//! test binary_heap   ... bench:   6,599,355 ns/iter (+/- 84,674)
-//! test max           ... bench:     669,726 ns/iter (+/- 13,595)
-//! test max_unstable  ... bench:     635,435 ns/iter (+/- 9,683)
-//! test sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
-//! test sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
+//! binary_heap   ... bench:   6,599,355 ns/iter (+/- 84,674)
+//! max           ... bench:     669,726 ns/iter (+/- 13,595)
+//! max_unstable  ... bench:     635,435 ns/iter (+/- 9,683)
+//! sort          ... bench:  62,585,547 ns/iter (+/- 1,361,258)
+//! sort_unstable ... bench:  34,595,265 ns/iter (+/- 739,255)
 //!
 //! openSUSE Leap 15.0, i7-7700 @ 3.60GHz, and 32GiB RAM:
 //!
-//! test binary_heap   ... bench:   5,521,422 ns/iter (+/- 124,780)
-//! test max           ... bench:     653,428 ns/iter (+/- 13,913)
-//! test max_unstable  ... bench:     524,200 ns/iter (+/- 61,033)
-//! test sort          ... bench:  41,428,917 ns/iter (+/- 486,681)
-//! test sort_unstable ... bench:  26,124,912 ns/iter (+/- 439,856)
+//! binary_heap   ... bench:   5,521,422 ns/iter (+/- 124,780)
+//! max           ... bench:     653,428 ns/iter (+/- 13,913)
+//! max_unstable  ... bench:     524,200 ns/iter (+/- 61,033)
+//! sort          ... bench:  41,428,917 ns/iter (+/- 486,681)
+//! sort_unstable ... bench:  26,124,912 ns/iter (+/- 439,856)
 //!
 //! Windows 10 Pro, i7-5820K @ 3.30GHz, and 16GiB RAM:
 //!
-//! test binary_heap   ... bench:   8,550,850 ns/iter (+/- 1,118,958)
-//! test max           ... bench:   2,282,062 ns/iter (+/- 564,063)
-//! test max_unstable  ... bench:   2,179,817 ns/iter (+/- 741,751)
-//! test sort          ... bench:  67,915,490 ns/iter (+/- 5,252,960)
-//! test sort_unstable ... bench:  34,022,120 ns/iter (+/- 3,745,490)
+//! binary_heap   ... bench:   8,550,850 ns/iter (+/- 1,118,958)
+//! max           ... bench:   2,282,062 ns/iter (+/- 564,063)
+//! max_unstable  ... bench:   2,179,817 ns/iter (+/- 741,751)
+//! sort          ... bench:  67,915,490 ns/iter (+/- 5,252,960)
+//! sort_unstable ... bench:  34,022,120 ns/iter (+/- 3,745,490)
 //! ```
 
 #![no_std]
@@ -181,7 +181,7 @@ pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> 
             &mut v[..n]
         }};
     }
-
+    // Find the smallest type possible for the index, to reduce the amount of allocation needed.
     let sz_u8 = mem::size_of::<(K, u8)>();
     let sz_u16 = mem::size_of::<(K, u16)>();
     let sz_u32 = mem::size_of::<(K, u32)>();
@@ -303,9 +303,8 @@ pub fn max_unstable_by_key<T, K: Ord>(
 ///
 /// # Examples
 /// ```
-/// let v = vec![-5_i32, 4, 1, -3, 2];
-/// let min = out::max_from_iter(v, 3);
-/// assert_eq!(min, [1, 2, 4]);
+/// let min = out::max_from_iter(-10..10, 3);
+/// assert_eq!(min, [7, 8, 9]);
 /// ```
 #[inline]
 #[cfg(feature = "alloc")]
@@ -322,9 +321,8 @@ pub fn max_from_iter<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec
 ///
 /// # Examples
 /// ```
-/// let v = vec![-5_i32, 4, 1, -3, 2];
-/// let min = out::max_from_iter_by(v, 3, |a, b| b.cmp(a));
-/// assert_eq!(min, [1, -3, -5]);
+/// let min = out::max_from_iter_by(-10_i32..10, 3, |a, b| b.cmp(a));
+/// assert_eq!(min, [-8, -9, -10]);
 /// ```
 #[inline]
 #[cfg(feature = "alloc")]
@@ -347,11 +345,11 @@ pub fn max_from_iter_by<T>(
     v.sort_by(&mut cmp);
     for mut item in iter {
         if cmp(&item, &v[0]) != Ordering::Less {
-            let mut j = 0;
+            let mut i = 0;
             mem::swap(&mut item, &mut v[0]);
-            while j < n - 1 && cmp(&v[j], &v[j + 1]) != Ordering::Less {
-                v.swap(j, j + 1);
-                j += 1;
+            while i < n - 1 && cmp(&v[i], &v[i + 1]) != Ordering::Less {
+                v.swap(i, i + 1);
+                i += 1;
             }
         }
     }
@@ -367,9 +365,8 @@ pub fn max_from_iter_by<T>(
 ///
 /// # Examples
 /// ```
-/// let v = vec![-5_i32, 4, 1, -3, 2];
-/// let max = out::max_from_iter_by_key(v, 3, |a| a.abs());
-/// assert_eq!(max, [-3, 4, -5]);
+/// let max = out::max_from_iter_by_key(-10_i32..10, 3, |a| a.abs());
+/// assert_eq!(max, [-9, 9, -10]);
 /// ```
 #[inline]
 #[cfg(feature = "alloc")]
@@ -391,9 +388,8 @@ pub fn max_from_iter_by_key<T, K: Ord>(
 ///
 /// # Examples
 /// ```
-/// let v = vec![-5_i32, 4, 1, -3, 2];
-/// let min = out::max_from_iter_unstable(v, 3);
-/// assert_eq!(min, [1, 2, 4]);
+/// let min = out::max_from_iter_unstable(-10..10, 3);
+/// assert_eq!(min, [7, 8, 9]);
 /// ```
 #[inline]
 #[cfg(feature = "alloc")]
@@ -411,9 +407,8 @@ pub fn max_from_iter_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usiz
 ///
 /// # Examples
 /// ```
-/// let v = vec![-5_i32, 4, 1, -3, 2];
-/// let min = out::max_from_iter_unstable_by(v, 3, |a, b| b.cmp(a));
-/// assert_eq!(min, [1, -3, -5]);
+/// let min = out::max_from_iter_unstable_by(-10..10, 3, |a, b| b.cmp(a));
+/// assert_eq!(min, [-8, -9, -10]);
 /// ```
 #[inline]
 #[cfg(feature = "alloc")]
@@ -436,11 +431,11 @@ pub fn max_from_iter_unstable_by<T>(
     v.sort_unstable_by(&mut cmp);
     for mut item in iter {
         if cmp(&item, &v[0]) == Ordering::Greater {
-            let mut j = 0;
+            let mut i = 0;
             mem::swap(&mut item, &mut v[0]);
-            while j < n - 1 && cmp(&v[j], &v[j + 1]) == Ordering::Greater {
-                v.swap(j, j + 1);
-                j += 1;
+            while i < n - 1 && cmp(&v[i], &v[i + 1]) == Ordering::Greater {
+                v.swap(i, i + 1);
+                i += 1;
             }
         }
     }
@@ -457,9 +452,8 @@ pub fn max_from_iter_unstable_by<T>(
 ///
 /// # Examples
 /// ```
-/// let v = vec![-5_i32, 4, 1, -3, 2];
-/// let max = out::max_from_iter_unstable_by_key(v, 3, |a| a.abs());
-/// assert_eq!(max, [-3, 4, -5]);
+/// let max = out::max_from_iter_unstable_by_key(-10_i32..10, 3, |a| a.abs());
+/// assert_eq!(max, [9, -9, -10]);
 /// ```
 #[inline]
 #[cfg(feature = "alloc")]
