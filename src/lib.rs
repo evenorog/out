@@ -53,6 +53,8 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 use core::{cmp::Ordering, mem, slice};
 
 /// Get the `n` largest items.
@@ -221,11 +223,8 @@ pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> 
     // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
     macro_rules! max_by_cached_key {
         ($t:ty) => {{
-            // We cache the key together with the index.
-            let mut keys_and_indices: alloc::vec::Vec<_>
-                = v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t)).collect();
             // All elements are unique since they contain the index, so we can use the unstable version.
-            let max = max_unstable(&mut keys_and_indices, n);
+            let mut max = max_from_iter_unstable(v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t)), n);
             for i in 0..n {
                 let mut idx = max[i].1;
                 while (idx as usize) < i {
@@ -242,14 +241,11 @@ pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> 
     let sz_u16 = mem::size_of::<(K, u16)>();
     let sz_u32 = mem::size_of::<(K, u32)>();
     let sz_usize = mem::size_of::<(K, usize)>();
-    let len = v.len();
-    if len < 2 {
-        &mut v[..]
-    } else if sz_u8 < sz_u16 && len <= (core::u8::MAX as usize) {
+    if sz_u8 < sz_u16 && v.len() <= core::u8::MAX as usize {
         max_by_cached_key!(u8)
-    } else if sz_u16 < sz_u32 && len <= (core::u16::MAX as usize) {
+    } else if sz_u16 < sz_u32 && v.len() <= core::u16::MAX as usize {
         max_by_cached_key!(u16)
-    } else if sz_u32 < sz_usize && len <= (core::u32::MAX as usize) {
+    } else if sz_u32 < sz_usize && v.len() <= core::u32::MAX as usize {
         max_by_cached_key!(u32)
     } else {
         max_by_cached_key!(usize)
@@ -315,4 +311,94 @@ unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T]) {
     let len = right.len();
     let ptr = right.as_mut_ptr();
     *right = slice::from_raw_parts_mut(ptr.add(1), len - 1);
+}
+
+/// Get the `n` largest items from an iterator.
+///
+/// This function is not stable, i.e. it may not preserve the order of equal elements.
+/// This function should be faster than `max_from_iter` in most cases.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let v = vec![-5_i32, 4, 1, -3, 2];
+/// let min = out::max_from_iter_unstable(v, 3);
+/// assert_eq!(min, [1, 2, 4]);
+/// ```
+#[inline]
+#[cfg(feature = "alloc")]
+pub fn max_from_iter_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
+    max_from_iter_unstable_by(iter, n, T::cmp)
+}
+
+/// Get the `n` largest items from an iterator with a comparator function.
+///
+/// This function is not stable, i.e. it may not preserve the order of equal elements.
+/// This function should be faster than `max_from_iter_by` in most cases.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let v = vec![-5_i32, 4, 1, -3, 2];
+/// let min = out::max_from_iter_unstable_by(v, 3, |a, b| b.cmp(a));
+/// assert_eq!(min, [1, -3, -5]);
+/// ```
+#[inline]
+#[cfg(feature = "alloc")]
+pub fn max_from_iter_unstable_by<T>(
+    iter: impl IntoIterator<Item = T>,
+    n: usize,
+    mut cmp: impl FnMut(&T, &T) -> Ordering,
+) -> Vec<T> {
+    let mut v = Vec::with_capacity(n);
+    if n == 0 {
+        return v;
+    }
+    let mut iter = iter.into_iter();
+    while v.len() < n {
+        let item = iter
+            .next()
+            .expect("`n` can not be larger than the iterator");
+        v.push(item);
+    }
+    v.sort_unstable_by(&mut cmp);
+    for mut item in iter {
+        if cmp(&item, &v[0]) == Ordering::Greater {
+            let mut j = 0;
+            mem::swap(&mut item, &mut v[0]);
+            while j < n - 1 && cmp(&v[j], &v[j + 1]) == Ordering::Greater {
+                v.swap(j, j + 1);
+                j += 1;
+            }
+        }
+    }
+    v
+}
+
+/// Get the `n` largest items from an iterator with a key extraction function.
+///
+/// This function is not stable, i.e. it may not preserve the order of equal elements.
+/// This function should be faster than `max_from_iter_by_key` in most cases.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let v = vec![-5_i32, 4, 1, -3, 2];
+/// let max = out::max_from_iter_unstable_by_key(v, 3, |a| a.abs());
+/// assert_eq!(max, [-3, 4, -5]);
+/// ```
+#[inline]
+#[cfg(feature = "alloc")]
+pub fn max_from_iter_unstable_by_key<T, K: Ord>(
+    iter: impl IntoIterator<Item = T>,
+    n: usize,
+    mut f: impl FnMut(&T) -> K,
+) -> Vec<T> {
+    max_from_iter_unstable_by(iter, n, |a, b| f(a).cmp(&f(b)))
 }
