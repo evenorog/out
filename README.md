@@ -4,7 +4,7 @@
 [![Crates.io](https://img.shields.io/crates/v/out.svg)](https://crates.io/crates/out)
 [![Docs](https://docs.rs/out/badge.svg)](https://docs.rs/out)
 
-Provides functionality to get the `n` largest items from a `&mut [T]`.
+Provides functionality to get the `n` largest items from slices and iterators.
 
 ```rust
 let mut v = [-5, 4, 1, -3, 2];
@@ -13,7 +13,7 @@ assert_eq!(max, [1, 2, 4]);
 ```
 
 This library can provide significant performance increase compared to sorting or
-converting to a heap when `n` is relatively small compared to the length of the slice.
+converting to a heap when `n` is relatively small compared to the length of the slice or iterator.
 
 ## Benchmarks
 

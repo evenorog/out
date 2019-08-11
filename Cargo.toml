@@ -1,8 +1,8 @@
 [package]
 name = "out"
-version = "3.0.0"
+version = "3.1.0"
 authors = ["evenorog <evenorog@gmail.com>"]
-description = "Provides functionality to get the n largest items from a &mut [T]."
+description = "Provides functionality to get the n largest items from slices and iterators."
 documentation = "https://docs.rs/out"
 repository = "https://github.com/evenorog/out"
 readme = "README.md"

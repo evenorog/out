@@ -1,4 +1,4 @@
-//! Provides functionality to get the `n` largest items from a `&mut [T]`.
+//! Provides functionality to get the `n` largest items from slices and iterators.
 //!
 //! ```
 //! let mut v = [-5, 4, 1, -3, 2];
@@ -7,7 +7,7 @@
 //! ```
 //!
 //! This library can provide significant performance increase compared to sorting or
-//! converting to a heap when `n` is relatively small compared to the length of the slice.
+//! converting to a heap when `n` is relatively small compared to the length of the slice or iterator.
 //!
 //! # Benchmarks
 //!
@@ -40,7 +40,7 @@
 //! ```
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/out/3.0.0")]
+#![doc(html_root_url = "https://docs.rs/out/3.1.0")]
 #![deny(
     bad_style,
     bare_trait_objects,
