@@ -43,6 +43,24 @@ fn max_by_cached_key(b: &mut test::Bencher) {
 }
 
 #[bench]
+fn max_from_iter(b: &mut test::Bencher) {
+    let v = create_random_vec();
+    b.iter(|| {
+        let v = v.clone();
+        test::black_box(out::max_from_iter(v, N));
+    });
+}
+
+#[bench]
+fn max_from_iter_unstable(b: &mut test::Bencher) {
+    let v = create_random_vec();
+    b.iter(|| {
+        let v = v.clone();
+        test::black_box(out::max_from_iter_unstable(v, N));
+    });
+}
+
+#[bench]
 fn sort(b: &mut test::Bencher) {
     let v = create_random_vec();
     b.iter(|| {

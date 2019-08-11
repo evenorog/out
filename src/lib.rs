@@ -76,25 +76,6 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
     max_by(v, n, T::cmp)
 }
 
-/// Get the `n` largest items.
-///
-/// This function is not stable, i.e. it may not preserve the order of equal elements.
-/// This function should be faster than `max` in most cases.
-///
-/// # Panics
-/// Panics if `n > len`.
-///
-/// # Examples
-/// ```
-/// let mut v = [-5, 4, 1, -3, 2];
-/// let max = out::max_unstable(&mut v, 3);
-/// assert_eq!(max, [1, 2, 4]);
-/// ```
-#[inline]
-pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
-    max_unstable_by(v, n, T::cmp)
-}
-
 /// Get the `n` largest items with a comparator function.
 ///
 /// This function is stable, i.e. it preserves the order of equal elements.
@@ -144,6 +125,95 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         }
     }
     left
+}
+
+/// Get the `n` largest items with a key extraction function.
+///
+/// This function is stable, i.e. it preserves the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let mut v = [-5_i32, 4, 1, -3, 2];
+/// let max = out::max_by_key(&mut v, 3, |a| a.abs());
+/// assert_eq!(max, [-3, 4, -5]);
+/// ```
+#[inline]
+#[cfg(feature = "alloc")]
+pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
+    max_by(v, n, |a, b| f(a).cmp(&f(b)))
+}
+
+/// Get the `n` largest items with a key extraction function.
+///
+/// The key function is called only once per element, but for simple key functions `max_by_key`
+/// is likely to be faster.
+///
+/// This function is stable, i.e. it preserves the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let mut v = [-5_i32, 4, 1, -3, 2];
+/// let max = out::max_by_cached_key(&mut v, 3, |a| a.abs());
+/// assert_eq!(max, [-3, 4, -5]);
+/// ```
+#[inline]
+#[cfg(feature = "alloc")]
+pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
+    // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
+    macro_rules! max_by_cached_key {
+        ($t:ty) => {{
+            // All elements are unique since they contain the index, so we can use the unstable version.
+            let mut max = max_from_iter_unstable(v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t)), n);
+            for i in 0..n {
+                let mut idx = max[i].1;
+                while (idx as usize) < i {
+                    idx = max[idx as usize].1;
+                }
+                max[i].1 = idx;
+                v.swap(i, idx as usize);
+            }
+            &mut v[..n]
+        }};
+    }
+
+    let sz_u8 = mem::size_of::<(K, u8)>();
+    let sz_u16 = mem::size_of::<(K, u16)>();
+    let sz_u32 = mem::size_of::<(K, u32)>();
+    let sz_usize = mem::size_of::<(K, usize)>();
+    if sz_u8 < sz_u16 && v.len() <= core::u8::MAX as usize {
+        max_by_cached_key!(u8)
+    } else if sz_u16 < sz_u32 && v.len() <= core::u16::MAX as usize {
+        max_by_cached_key!(u16)
+    } else if sz_u32 < sz_usize && v.len() <= core::u32::MAX as usize {
+        max_by_cached_key!(u32)
+    } else {
+        max_by_cached_key!(usize)
+    }
+}
+
+/// Get the `n` largest items.
+///
+/// This function is not stable, i.e. it may not preserve the order of equal elements.
+/// This function should be faster than `max` in most cases.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let mut v = [-5, 4, 1, -3, 2];
+/// let max = out::max_unstable(&mut v, 3);
+/// assert_eq!(max, [1, 2, 4]);
+/// ```
+#[inline]
+pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
+    max_unstable_by(v, n, T::cmp)
 }
 
 /// Get the `n` largest items with a comparator function.
@@ -203,76 +273,6 @@ pub fn max_unstable_by<T>(
 
 /// Get the `n` largest items with a key extraction function.
 ///
-/// The key function is called only once per element, but for simple key functions `max_by_key`
-/// is likely to be faster.
-///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
-/// # Panics
-/// Panics if `n > len`.
-///
-/// # Examples
-/// ```
-/// let mut v = [-5_i32, 4, 1, -3, 2];
-/// let max = out::max_by_cached_key(&mut v, 3, |a| a.abs());
-/// assert_eq!(max, [-3, 4, -5]);
-/// ```
-#[inline]
-#[cfg(feature = "alloc")]
-pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
-    // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
-    macro_rules! max_by_cached_key {
-        ($t:ty) => {{
-            // All elements are unique since they contain the index, so we can use the unstable version.
-            let mut max = max_from_iter_unstable(v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t)), n);
-            for i in 0..n {
-                let mut idx = max[i].1;
-                while (idx as usize) < i {
-                    idx = max[idx as usize].1;
-                }
-                max[i].1 = idx;
-                v.swap(i, idx as usize);
-            }
-            &mut v[..n]
-        }};
-    }
-
-    let sz_u8 = mem::size_of::<(K, u8)>();
-    let sz_u16 = mem::size_of::<(K, u16)>();
-    let sz_u32 = mem::size_of::<(K, u32)>();
-    let sz_usize = mem::size_of::<(K, usize)>();
-    if sz_u8 < sz_u16 && v.len() <= core::u8::MAX as usize {
-        max_by_cached_key!(u8)
-    } else if sz_u16 < sz_u32 && v.len() <= core::u16::MAX as usize {
-        max_by_cached_key!(u16)
-    } else if sz_u32 < sz_usize && v.len() <= core::u32::MAX as usize {
-        max_by_cached_key!(u32)
-    } else {
-        max_by_cached_key!(usize)
-    }
-}
-
-/// Get the `n` largest items with a key extraction function.
-///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
-/// # Panics
-/// Panics if `n > len`.
-///
-/// # Examples
-/// ```
-/// let mut v = [-5_i32, 4, 1, -3, 2];
-/// let max = out::max_by_key(&mut v, 3, |a| a.abs());
-/// assert_eq!(max, [-3, 4, -5]);
-/// ```
-#[inline]
-#[cfg(feature = "alloc")]
-pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
-    max_by(v, n, |a, b| f(a).cmp(&f(b)))
-}
-
-/// Get the `n` largest items with a key extraction function.
-///
 /// This function is not stable, i.e. it may not preserve the order of equal elements.
 /// This function should be faster than `max_by_key` in most cases.
 ///
@@ -294,23 +294,91 @@ pub fn max_unstable_by_key<T, K: Ord>(
     max_unstable_by(v, n, |a, b| f(a).cmp(&f(b)))
 }
 
-/// Shift the left slice to the right while shrinking the right slice by `count`.
+/// Get the `n` largest items from an iterator.
 ///
-/// ```text
-/// [a, b][c, d, e] -> a [b, c][d, e]
+/// This function is stable, i.e. it preserves the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
 /// ```
-///
-/// # Safety
-/// The two slices must be next to each other and `count` can not be larger
-/// than the length of `right`.
+/// let v = vec![-5_i32, 4, 1, -3, 2];
+/// let min = out::max_from_iter(v, 3);
+/// assert_eq!(min, [1, 2, 4]);
+/// ```
 #[inline]
-unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T]) {
-    let len = left.len();
-    let ptr = left.as_mut_ptr();
-    *left = slice::from_raw_parts_mut(ptr.add(1), len);
-    let len = right.len();
-    let ptr = right.as_mut_ptr();
-    *right = slice::from_raw_parts_mut(ptr.add(1), len - 1);
+#[cfg(feature = "alloc")]
+pub fn max_from_iter<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
+    max_from_iter_by(iter, n, T::cmp)
+}
+
+/// Get the `n` largest items from an iterator with a comparator function.
+///
+/// This function is stable, i.e. it preserves the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let v = vec![-5_i32, 4, 1, -3, 2];
+/// let min = out::max_from_iter_by(v, 3, |a, b| b.cmp(a));
+/// assert_eq!(min, [1, -3, -5]);
+/// ```
+#[inline]
+#[cfg(feature = "alloc")]
+pub fn max_from_iter_by<T>(
+    iter: impl IntoIterator<Item = T>,
+    n: usize,
+    mut cmp: impl FnMut(&T, &T) -> Ordering,
+) -> Vec<T> {
+    let mut v = Vec::with_capacity(n);
+    if n == 0 {
+        return v;
+    }
+    let mut iter = iter.into_iter();
+    while v.len() < n {
+        let item = iter
+            .next()
+            .expect("`n` can not be larger than the iterator");
+        v.push(item);
+    }
+    v.sort_by(&mut cmp);
+    for mut item in iter {
+        if cmp(&item, &v[0]) != Ordering::Less {
+            let mut j = 0;
+            mem::swap(&mut item, &mut v[0]);
+            while j < n - 1 && cmp(&v[j], &v[j + 1]) != Ordering::Less {
+                v.swap(j, j + 1);
+                j += 1;
+            }
+        }
+    }
+    v
+}
+
+/// Get the `n` largest items from an iterator with a key extraction function.
+///
+/// This function is stable, i.e. it preserves the order of equal elements.
+///
+/// # Panics
+/// Panics if `n > len`.
+///
+/// # Examples
+/// ```
+/// let v = vec![-5_i32, 4, 1, -3, 2];
+/// let max = out::max_from_iter_by_key(v, 3, |a| a.abs());
+/// assert_eq!(max, [-3, 4, -5]);
+/// ```
+#[inline]
+#[cfg(feature = "alloc")]
+pub fn max_from_iter_by_key<T, K: Ord>(
+    iter: impl IntoIterator<Item = T>,
+    n: usize,
+    mut f: impl FnMut(&T) -> K,
+) -> Vec<T> {
+    max_from_iter_by(iter, n, |a, b| f(a).cmp(&f(b)))
 }
 
 /// Get the `n` largest items from an iterator.
@@ -401,4 +469,23 @@ pub fn max_from_iter_unstable_by_key<T, K: Ord>(
     mut f: impl FnMut(&T) -> K,
 ) -> Vec<T> {
     max_from_iter_unstable_by(iter, n, |a, b| f(a).cmp(&f(b)))
+}
+
+/// Shift the left slice to the right while shrinking the right slice by `count`.
+///
+/// ```text
+/// [a, b][c, d, e] -> a [b, c][d, e]
+/// ```
+///
+/// # Safety
+/// The two slices must be next to each other and `count` can not be larger
+/// than the length of `right`.
+#[inline]
+unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T]) {
+    let len = left.len();
+    let ptr = left.as_mut_ptr();
+    *left = slice::from_raw_parts_mut(ptr.add(1), len);
+    let len = right.len();
+    let ptr = right.as_mut_ptr();
+    *right = slice::from_raw_parts_mut(ptr.add(1), len - 1);
 }
