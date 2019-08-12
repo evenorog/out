@@ -22,31 +22,31 @@ n = `100`, len = `1_000_000`:
 ```
 openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
 
-binary_heap            :   6,599,355 ns/iter (+/- 84,674)
-max                    :     669,726 ns/iter (+/- 13,595)
-max_by_cached_key      :   1,427,183 ns/iter (+/- 67,828)
-max_from_iter          :     941,276 ns/iter (+/- 47,574)
-max_from_iter_unstable :     944,383 ns/iter (+/- 120,882)
-max_unstable           :     635,435 ns/iter (+/- 9,683)
-sort                   :  62,585,547 ns/iter (+/- 1,361,258)
-sort_by_cached_key     :  70,672,779 ns/iter (+/- 7,625,703)
-sort_unstable          :  34,595,265 ns/iter (+/- 739,255)
+binary_heap              6,599,355 ns/iter (+/- 84,674)
+max                        669,726 ns/iter (+/- 13,595)
+max_by_cached_key        1,427,183 ns/iter (+/- 67,828)
+max_from_iter              941,276 ns/iter (+/- 47,574)
+max_from_iter_unstable     944,383 ns/iter (+/- 120,882)
+max_unstable               635,435 ns/iter (+/- 9,683)
+sort                    62,585,547 ns/iter (+/- 1,361,258)
+sort_by_cached_key      70,672,779 ns/iter (+/- 7,625,703)
+sort_unstable           34,595,265 ns/iter (+/- 739,255)
 
 openSUSE Leap 15.0, i7-7700 @ 3.60GHz, and 32GiB RAM:
 
-binary_heap            :   5,521,422 ns/iter (+/- 124,780) 
-max                    :     653,428 ns/iter (+/- 13,913) 
-max_unstable           :     524,200 ns/iter (+/- 61,033) 
-sort                   :  41,428,917 ns/iter (+/- 486,681) 
-sort_unstable          :  26,124,912 ns/iter (+/- 439,856)
+binary_heap              5,521,422 ns/iter (+/- 124,780) 
+max                        653,428 ns/iter (+/- 13,913) 
+max_unstable               524,200 ns/iter (+/- 61,033) 
+sort                    41,428,917 ns/iter (+/- 486,681) 
+sort_unstable           26,124,912 ns/iter (+/- 439,856)
 
 Windows 10 Pro, i7-5820K @ 3.30GHz, and 16GiB RAM:
 
-binary_heap            :   8,550,850 ns/iter (+/- 1,118,958)
-max                    :   2,282,062 ns/iter (+/- 564,063)
-max_unstable           :   2,179,817 ns/iter (+/- 741,751)
-sort                   :  67,915,490 ns/iter (+/- 5,252,960)
-sort_unstable          :  34,022,120 ns/iter (+/- 3,745,490)
+binary_heap              8,550,850 ns/iter (+/- 1,118,958)
+max                      2,282,062 ns/iter (+/- 564,063)
+max_unstable             2,179,817 ns/iter (+/- 741,751)
+sort                    67,915,490 ns/iter (+/- 5,252,960)
+sort_unstable           34,022,120 ns/iter (+/- 3,745,490)
 ```
 
 ### License
