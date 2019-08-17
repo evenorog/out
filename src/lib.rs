@@ -7,7 +7,7 @@
 //! ```
 //!
 //! This library can provide significant performance increase compared to sorting or
-//! converting to a heap when `n` is relatively small compared to the length of the slice or iterator.
+//! converting to a heap when `n` is small compared to the length of the slice or iterator.
 //!
 //! # Benchmarks
 //!

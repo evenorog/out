@@ -1,4 +1,4 @@
-# out
+# OUT
 
 [![Travis](https://travis-ci.org/evenorog/out.svg?branch=master)](https://travis-ci.org/evenorog/out)
 [![Crates.io](https://img.shields.io/crates/v/out.svg)](https://crates.io/crates/out)
@@ -13,7 +13,7 @@ assert_eq!(max, [1, 2, 4]);
 ```
 
 This library can provide significant performance increase compared to sorting or
-converting to a heap when `n` is relatively small compared to the length of the slice or iterator.
+converting to a heap when `n` is small compared to the length of the slice or iterator.
 
 ## Benchmarks
 
@@ -32,7 +32,7 @@ test sort                   ... bench:  63,192,028 ns/iter (+/- 2,338,506)
 test sort_by_cached_key     ... bench:  66,058,834 ns/iter (+/- 5,447,387)
 test sort_unstable          ... bench:  30,953,024 ns/iter (+/- 1,141,696)
 
-Windows 10 Pro, i7-5820K @ 3.30GHz, and 16GiB RAM:
+Windows 10 Pro (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
 
 test binary_heap            ... bench:   8,666,095 ns/iter (+/- 3,790,987)
 test max                    ... bench:   2,353,487 ns/iter (+/- 1,140,791)
