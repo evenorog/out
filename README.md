@@ -8,7 +8,7 @@ Provides functionality to get the `n` largest items from slices and iterators.
 
 ```rust
 let mut v = [-5, 4, 1, -3, 2];
-let max = out::max(&mut v, 3);
+let max = out::slice::max(&mut v, 3);
 assert_eq!(max, [1, 2, 4]);
 ```
 
@@ -22,27 +22,27 @@ n = `100`, len = `1_000_000`:
 ```
 openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
 
-test binary_heap            ... bench:   6,592,801 ns/iter (+/- 780,590)
-test max                    ... bench:     698,643 ns/iter (+/- 46,373)
-test max_by_cached_key      ... bench:   1,516,099 ns/iter (+/- 37,853)
-test max_from_iter          ... bench:     918,253 ns/iter (+/- 99,863)
-test max_from_iter_unstable ... bench:     916,908 ns/iter (+/- 58,050)
-test max_unstable           ... bench:     655,286 ns/iter (+/- 25,017)
-test sort                   ... bench:  63,192,028 ns/iter (+/- 2,338,506)
-test sort_by_cached_key     ... bench:  66,058,834 ns/iter (+/- 5,447,387)
-test sort_unstable          ... bench:  30,953,024 ns/iter (+/- 1,141,696)
+test binary_heap             ... bench:   6,592,801 ns/iter (+/- 780,590)
+test iter_max                ... bench:     918,253 ns/iter (+/- 99,863)
+test iter_max_unstable       ... bench:     916,908 ns/iter (+/- 58,050)
+test slice_max               ... bench:     698,643 ns/iter (+/- 46,373)
+test slice_max_by_cached_key ... bench:   1,516,099 ns/iter (+/- 37,853)
+test slice_max_unstable      ... bench:     655,286 ns/iter (+/- 25,017)
+test sort                    ... bench:  63,192,028 ns/iter (+/- 2,338,506)
+test sort_by_cached_key      ... bench:  66,058,834 ns/iter (+/- 5,447,387)
+test sort_unstable           ... bench:  30,953,024 ns/iter (+/- 1,141,696)
 
 Windows 10 Pro (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
 
-test binary_heap            ... bench:   8,666,095 ns/iter (+/- 3,790,987)
-test max                    ... bench:   2,353,487 ns/iter (+/- 1,140,791)
-test max_by_cached_key      ... bench:   3,317,930 ns/iter (+/- 1,115,283)
-test max_from_iter          ... bench:   2,650,615 ns/iter (+/- 1,427,458)
-test max_from_iter_unstable ... bench:   2,604,860 ns/iter (+/- 1,001,639)
-test max_unstable           ... bench:   2,221,975 ns/iter (+/- 1,232,170)
-test sort                   ... bench:  73,953,630 ns/iter (+/- 23,036,689)
-test sort_by_cached_key     ... bench:  79,681,540 ns/iter (+/- 24,554,555)
-test sort_unstable          ... bench:  35,327,180 ns/iter (+/- 8,306,700)
+test binary_heap             ... bench:   8,666,095 ns/iter (+/- 3,790,987)
+test iter_max                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
+test iter_max_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
+test slice_max               ... bench:   2,353,487 ns/iter (+/- 1,140,791)
+test slice_max_by_cached_key ... bench:   3,317,930 ns/iter (+/- 1,115,283)
+test slice_max_unstable      ... bench:   2,221,975 ns/iter (+/- 1,232,170)
+test sort                    ... bench:  73,953,630 ns/iter (+/- 23,036,689)
+test sort_by_cached_key      ... bench:  79,681,540 ns/iter (+/- 24,554,555)
+test sort_unstable           ... bench:  35,327,180 ns/iter (+/- 8,306,700)
 ```
 
 ### License

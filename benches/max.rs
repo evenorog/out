@@ -16,47 +16,47 @@ fn create_random_vec() -> Vec<i32> {
 }
 
 #[bench]
-fn max(b: &mut test::Bencher) {
+fn slice_max(b: &mut test::Bencher) {
     let v = create_random_vec();
     b.iter(|| {
         let mut v = v.clone();
-        test::black_box(out::max(&mut v, N));
+        test::black_box(out::slice::max(&mut v, N));
     });
 }
 
 #[bench]
-fn max_unstable(b: &mut test::Bencher) {
+fn slice_max_unstable(b: &mut test::Bencher) {
     let v = create_random_vec();
     b.iter(|| {
         let mut v = v.clone();
-        test::black_box(out::max_unstable(&mut v, N));
+        test::black_box(out::slice::max_unstable(&mut v, N));
     });
 }
 
 #[bench]
-fn max_by_cached_key(b: &mut test::Bencher) {
+fn slice_max_by_cached_key(b: &mut test::Bencher) {
     let v = create_random_vec();
     b.iter(|| {
         let mut v = v.clone();
-        test::black_box(out::max_by_cached_key(&mut v, N, |&a| a));
+        test::black_box(out::slice::max_by_cached_key(&mut v, N, |&a| a));
     });
 }
 
 #[bench]
-fn max_from_iter(b: &mut test::Bencher) {
+fn iter_max(b: &mut test::Bencher) {
     let v = create_random_vec();
     b.iter(|| {
         let v = v.clone();
-        test::black_box(out::max_from_iter(v, N));
+        test::black_box(out::iter::max(v, N));
     });
 }
 
 #[bench]
-fn max_from_iter_unstable(b: &mut test::Bencher) {
+fn iter_max_unstable(b: &mut test::Bencher) {
     let v = create_random_vec();
     b.iter(|| {
         let v = v.clone();
-        test::black_box(out::max_from_iter_unstable(v, N));
+        test::black_box(out::iter::max_unstable(v, N));
     });
 }
 
