@@ -3,7 +3,6 @@
 extern crate test;
 
 use rand::prelude::*;
-use std::collections::BinaryHeap;
 
 const N: usize = 100;
 const LEN: usize = 1_000_000;
@@ -15,86 +14,99 @@ fn create_random_vec() -> Vec<i32> {
     v
 }
 
-#[bench]
-fn slice_max(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let mut v = v.clone();
-        test::black_box(out::slice::max(&mut v, N));
-    });
+mod slice {
+    use crate::{create_random_vec, N};
+
+    #[bench]
+    fn max(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let mut v = v.clone();
+            test::black_box(out::slice::max(&mut v, N));
+        });
+    }
+
+    #[bench]
+    fn max_unstable(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let mut v = v.clone();
+            test::black_box(out::slice::max_unstable(&mut v, N));
+        });
+    }
+
+    #[bench]
+    fn max_by_cached_key(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let mut v = v.clone();
+            test::black_box(out::slice::max_by_cached_key(&mut v, N, |&a| a));
+        });
+    }
 }
 
-#[bench]
-fn slice_max_unstable(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let mut v = v.clone();
-        test::black_box(out::slice::max_unstable(&mut v, N));
-    });
+mod iter {
+    use crate::{create_random_vec, N};
+
+    #[bench]
+    fn max(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let v = v.clone();
+            test::black_box(out::iter::max(v, N));
+        });
+    }
+
+    #[bench]
+    fn max_unstable(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let v = v.clone();
+            test::black_box(out::iter::max_unstable(v, N));
+        });
+    }
 }
 
-#[bench]
-fn slice_max_by_cached_key(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let mut v = v.clone();
-        test::black_box(out::slice::max_by_cached_key(&mut v, N, |&a| a));
-    });
-}
+mod std {
+    use crate::{create_random_vec, N};
+    use std::collections::BinaryHeap;
 
-#[bench]
-fn iter_max(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let v = v.clone();
-        test::black_box(out::iter::max(v, N));
-    });
-}
+    #[bench]
+    fn sort(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let mut v = v.clone();
+            v.sort();
+            test::black_box(&v[..N]);
+        });
+    }
 
-#[bench]
-fn iter_max_unstable(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let v = v.clone();
-        test::black_box(out::iter::max_unstable(v, N));
-    });
-}
+    #[bench]
+    fn sort_unstable(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let mut v = v.clone();
+            v.sort_unstable();
+            test::black_box(&v[..N]);
+        });
+    }
 
-#[bench]
-fn sort(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let mut v = v.clone();
-        v.sort();
-        test::black_box(&v[..N]);
-    });
-}
+    #[bench]
+    fn sort_by_cached_key(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let mut v = v.clone();
+            v.sort_by_cached_key(|&a| a);
+            test::black_box(&v[..N]);
+        });
+    }
 
-#[bench]
-fn sort_unstable(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let mut v = v.clone();
-        v.sort_unstable();
-        test::black_box(&v[..N]);
-    });
-}
-
-#[bench]
-fn sort_by_cached_key(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let mut v = v.clone();
-        v.sort_by_cached_key(|&a| a);
-        test::black_box(&v[..N]);
-    });
-}
-
-#[bench]
-fn binary_heap(b: &mut test::Bencher) {
-    let v = create_random_vec();
-    b.iter(|| {
-        let heap = BinaryHeap::from(v.clone());
-        test::black_box(heap.into_iter().take(N).collect::<Vec<_>>());
-    });
+    #[bench]
+    fn binary_heap(b: &mut test::Bencher) {
+        let v = create_random_vec();
+        b.iter(|| {
+            let heap = BinaryHeap::from(v.clone());
+            test::black_box(heap.into_iter().take(N).collect::<Vec<_>>());
+        });
+    }
 }

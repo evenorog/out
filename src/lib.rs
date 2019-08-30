@@ -16,27 +16,27 @@
 //! ```text
 //! openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
 //!
-//! test binary_heap             ... bench:   6,592,801 ns/iter (+/- 780,590)
-//! test iter_max                ... bench:     918,253 ns/iter (+/- 99,863)
-//! test iter_max_unstable       ... bench:     916,908 ns/iter (+/- 58,050)
-//! test slice_max               ... bench:     698,643 ns/iter (+/- 46,373)
-//! test slice_max_by_cached_key ... bench:   1,516,099 ns/iter (+/- 37,853)
-//! test slice_max_unstable      ... bench:     655,286 ns/iter (+/- 25,017)
-//! test sort                    ... bench:  63,192,028 ns/iter (+/- 2,338,506)
-//! test sort_by_cached_key      ... bench:  66,058,834 ns/iter (+/- 5,447,387)
-//! test sort_unstable           ... bench:  30,953,024 ns/iter (+/- 1,141,696)
+//! test iter::max                ... bench:     918,253 ns/iter (+/- 99,863)
+//! test iter::max_unstable       ... bench:     916,908 ns/iter (+/- 58,050)
+//! test slice::max               ... bench:     698,643 ns/iter (+/- 46,373)
+//! test slice::max_by_cached_key ... bench:   1,516,099 ns/iter (+/- 37,853)
+//! test slice::max_unstable      ... bench:     655,286 ns/iter (+/- 25,017)
+//! test std::binary_heap         ... bench:   6,592,801 ns/iter (+/- 780,590)
+//! test std::sort                ... bench:  63,192,028 ns/iter (+/- 2,338,506)
+//! test std::sort_by_cached_key  ... bench:  66,058,834 ns/iter (+/- 5,447,387)
+//! test std::sort_unstable       ... bench:  30,953,024 ns/iter (+/- 1,141,696)
 //!
 //! Windows 10 Pro (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
 //!
-//! test binary_heap             ... bench:   8,666,095 ns/iter (+/- 3,790,987)
-//! test iter_max                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
-//! test iter_max_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
-//! test slice_max               ... bench:   2,353,487 ns/iter (+/- 1,140,791)
-//! test slice_max_by_cached_key ... bench:   3,317,930 ns/iter (+/- 1,115,283)
-//! test slice_max_unstable      ... bench:   2,221,975 ns/iter (+/- 1,232,170)
-//! test sort                    ... bench:  73,953,630 ns/iter (+/- 23,036,689)
-//! test sort_by_cached_key      ... bench:  79,681,540 ns/iter (+/- 24,554,555)
-//! test sort_unstable           ... bench:  35,327,180 ns/iter (+/- 8,306,700)
+//! test iter::max                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
+//! test iter::max_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
+//! test slice::max               ... bench:   2,353,487 ns/iter (+/- 1,140,791)
+//! test slice::max_by_cached_key ... bench:   3,317,930 ns/iter (+/- 1,115,283)
+//! test slice::max_unstable      ... bench:   2,221,975 ns/iter (+/- 1,232,170)
+//! test std::binary_heap         ... bench:   8,666,095 ns/iter (+/- 3,790,987)
+//! test std::sort                ... bench:  73,953,630 ns/iter (+/- 23,036,689)
+//! test std::sort_by_cached_key  ... bench:  79,681,540 ns/iter (+/- 24,554,555)
+//! test std::sort_unstable       ... bench:  35,327,180 ns/iter (+/- 8,306,700)
 //! ```
 
 #![no_std]
@@ -53,7 +53,7 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
-/// Functions for working with slices.
+/// Functions for use with slices.
 pub mod slice {
     use core::{cmp::Ordering, mem};
 
@@ -313,7 +313,7 @@ pub mod slice {
     }
 }
 
-/// Functions for working with iterators.
+/// Functions for use with iterators.
 #[cfg(feature = "alloc")]
 pub mod iter {
     use alloc::vec::Vec;
