@@ -55,7 +55,7 @@ extern crate alloc;
 
 /// Functions for use with slices.
 pub mod slice {
-    use core::{cmp::Ordering, mem};
+    use core::{cmp::Ordering, mem, slice};
 
     /// Get the `n` largest items.
     ///
@@ -182,15 +182,15 @@ pub mod slice {
             }};
         }
         // Find the smallest type possible for the index, to reduce the amount of allocation needed.
-        let sz_u8 = mem::size_of::<(K, u8)>();
-        let sz_u16 = mem::size_of::<(K, u16)>();
-        let sz_u32 = mem::size_of::<(K, u32)>();
-        let sz_usize = mem::size_of::<(K, usize)>();
-        if sz_u8 < sz_u16 && v.len() <= core::u8::MAX as usize {
+        let u8_size = mem::size_of::<(K, u8)>();
+        let u16_size = mem::size_of::<(K, u16)>();
+        let u32_size = mem::size_of::<(K, u32)>();
+        let usize_size = mem::size_of::<(K, usize)>();
+        if u8_size < u16_size && v.len() <= u8::max_value() as usize {
             max_by_cached_key!(u8)
-        } else if sz_u16 < sz_u32 && v.len() <= core::u16::MAX as usize {
+        } else if u16_size < u32_size && v.len() <= u16::max_value() as usize {
             max_by_cached_key!(u16)
-        } else if sz_u32 < sz_usize && v.len() <= core::u32::MAX as usize {
+        } else if u32_size < usize_size && v.len() <= u32::max_value() as usize {
             max_by_cached_key!(u32)
         } else {
             max_by_cached_key!(usize)
@@ -306,10 +306,10 @@ pub mod slice {
     unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T]) {
         let len = left.len();
         let ptr = left.as_mut_ptr();
-        *left = core::slice::from_raw_parts_mut(ptr.add(1), len);
+        *left = slice::from_raw_parts_mut(ptr.add(1), len);
         let len = right.len();
         let ptr = right.as_mut_ptr();
-        *right = core::slice::from_raw_parts_mut(ptr.add(1), len - 1);
+        *right = slice::from_raw_parts_mut(ptr.add(1), len - 1);
     }
 }
 
