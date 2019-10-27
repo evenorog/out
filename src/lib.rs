@@ -40,7 +40,7 @@
 //! ```
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/out/4.0.1")]
+#![doc(html_root_url = "https://docs.rs/out/4.0.2")]
 #![deny(
     bad_style,
     bare_trait_objects,
