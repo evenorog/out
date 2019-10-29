@@ -115,8 +115,8 @@ pub mod slice {
                     shift_slice_right(&mut left, &mut right);
                 }
             } else {
+                mem::swap(&mut left[0], &mut right[i]);
                 let mut j = 0;
-                mem::swap(&mut right[i], &mut left[j]);
                 while j < n - 1 && cmp(&left[j], &left[j + 1]) != Ordering::Less {
                     left.swap(j, j + 1);
                     j += 1;
@@ -259,8 +259,8 @@ pub mod slice {
                     shift_slice_right(&mut left, &mut right);
                 }
             } else {
+                mem::swap(&mut left[0], &mut right[i]);
                 let mut j = 0;
-                mem::swap(&mut right[i], &mut left[j]);
                 while j < n - 1 && cmp(&left[j], &left[j + 1]) == Ordering::Greater {
                     left.swap(j, j + 1);
                     j += 1;
@@ -317,7 +317,7 @@ pub mod slice {
 #[cfg(feature = "alloc")]
 pub mod iter {
     use alloc::vec::Vec;
-    use core::{cmp::Ordering, mem};
+    use core::cmp::Ordering;
 
     /// Get the `n` largest items from an iterator.
     ///
@@ -368,10 +368,10 @@ pub mod iter {
             v.push(item);
         }
         v.sort_by(&mut cmp);
-        for mut item in iter {
+        for item in iter {
             if cmp(&item, &v[0]) != Ordering::Less {
+                v[0] = item;
                 let mut i = 0;
-                mem::swap(&mut item, &mut v[0]);
                 while i < n - 1 && cmp(&v[i], &v[i + 1]) != Ordering::Less {
                     v.swap(i, i + 1);
                     i += 1;
@@ -454,10 +454,10 @@ pub mod iter {
             v.push(item);
         }
         v.sort_unstable_by(&mut cmp);
-        for mut item in iter {
+        for item in iter {
             if cmp(&item, &v[0]) == Ordering::Greater {
+                v[0] = item;
                 let mut i = 0;
-                mem::swap(&mut item, &mut v[0]);
                 while i < n - 1 && cmp(&v[i], &v[i + 1]) == Ordering::Greater {
                     v.swap(i, i + 1);
                     i += 1;
