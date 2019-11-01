@@ -332,7 +332,6 @@ pub mod iter {
     /// assert_eq!(min, [7, 8, 9]);
     /// ```
     #[inline]
-    #[cfg(feature = "alloc")]
     pub fn max<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
         max_by(iter, n, T::cmp)
     }
@@ -350,7 +349,6 @@ pub mod iter {
     /// assert_eq!(min, [-8, -9, -10]);
     /// ```
     #[inline]
-    #[cfg(feature = "alloc")]
     pub fn max_by<T>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
@@ -394,7 +392,6 @@ pub mod iter {
     /// assert_eq!(max, [-9, 9, -10]);
     /// ```
     #[inline]
-    #[cfg(feature = "alloc")]
     pub fn max_by_key<T, K: Ord>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
@@ -417,7 +414,6 @@ pub mod iter {
     /// assert_eq!(min, [7, 8, 9]);
     /// ```
     #[inline]
-    #[cfg(feature = "alloc")]
     pub fn max_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
         max_unstable_by(iter, n, T::cmp)
     }
@@ -436,7 +432,6 @@ pub mod iter {
     /// assert_eq!(min, [-8, -9, -10]);
     /// ```
     #[inline]
-    #[cfg(feature = "alloc")]
     pub fn max_unstable_by<T>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
@@ -481,7 +476,6 @@ pub mod iter {
     /// assert_eq!(max, [9, -9, -10]);
     /// ```
     #[inline]
-    #[cfg(feature = "alloc")]
     pub fn max_unstable_by_key<T, K: Ord>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
