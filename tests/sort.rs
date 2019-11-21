@@ -4,37 +4,37 @@ mod slice {
 
     #[quickcheck]
     #[cfg(feature = "alloc")]
-    fn max(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
+    fn sort(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort_by(|(a, _), (b, _)| a.cmp(b));
         TestResult::from_bool(
-            &mut s[v.len() - n..] == out::slice::max_by(&mut v, n, |(a, _), (b, _)| a.cmp(b)),
+            &mut s[v.len() - n..] == out::slice::sort_by(&mut v, n, |(a, _), (b, _)| a.cmp(b)),
         )
     }
 
     #[quickcheck]
-    fn max_unstable(mut v: Vec<i32>, n: usize) -> TestResult {
+    fn sort_unstable(mut v: Vec<i32>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort_unstable();
-        TestResult::from_bool(&mut s[v.len() - n..] == out::slice::max_unstable(&mut v, n))
+        TestResult::from_bool(&mut s[v.len() - n..] == out::slice::sort_unstable(&mut v, n))
     }
 
     #[quickcheck]
     #[cfg(feature = "alloc")]
-    fn max_by_cached_key(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
+    fn sort_by_cached_key(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort_by_cached_key(|&(a, _)| a);
         TestResult::from_bool(
-            &mut s[v.len() - n..] == out::slice::max_by_cached_key(&mut v, n, |&(a, _)| a),
+            &mut s[v.len() - n..] == out::slice::sort_by_cached_key(&mut v, n, |&(a, _)| a),
         )
     }
 }
@@ -45,25 +45,25 @@ mod iter {
 
     #[quickcheck]
     #[cfg(feature = "alloc")]
-    fn max(v: Vec<(i32, i32)>, n: usize) -> TestResult {
+    fn sort(v: Vec<(i32, i32)>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort_by(|(a, _), (b, _)| a.cmp(b));
         TestResult::from_bool(
-            s[v.len() - n..] == out::iter::max_by(v, n, |(a, _), (b, _)| a.cmp(b))[..],
+            s[v.len() - n..] == out::iter::sort_by(v, n, |(a, _), (b, _)| a.cmp(b))[..],
         )
     }
 
     #[quickcheck]
     #[cfg(feature = "alloc")]
-    fn max_unstable(v: Vec<i32>, n: usize) -> TestResult {
+    fn sort_unstable(v: Vec<i32>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort_unstable();
-        TestResult::from_bool(s[v.len() - n..] == out::iter::max_unstable(v, n)[..])
+        TestResult::from_bool(s[v.len() - n..] == out::iter::sort_unstable(v, n)[..])
     }
 }

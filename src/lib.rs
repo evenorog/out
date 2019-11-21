@@ -2,7 +2,7 @@
 //!
 //! ```
 //! let mut v = [-5, 4, 1, -3, 2];
-//! let max = out::slice::max(&mut v, 3);
+//! let max = out::slice::sort(&mut v, 3);
 //! assert_eq!(max, [1, 2, 4]);
 //! ```
 //!
@@ -16,27 +16,27 @@
 //! ```text
 //! openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
 //!
-//! test iter::max                ... bench:     918,253 ns/iter (+/- 99,863)
-//! test iter::max_unstable       ... bench:     916,908 ns/iter (+/- 58,050)
-//! test slice::max               ... bench:     698,643 ns/iter (+/- 46,373)
-//! test slice::max_by_cached_key ... bench:   1,516,099 ns/iter (+/- 37,853)
-//! test slice::max_unstable      ... bench:     655,286 ns/iter (+/- 25,017)
-//! test std::binary_heap         ... bench:   6,592,801 ns/iter (+/- 780,590)
-//! test std::sort                ... bench:  63,192,028 ns/iter (+/- 2,338,506)
-//! test std::sort_by_cached_key  ... bench:  66,058,834 ns/iter (+/- 5,447,387)
-//! test std::sort_unstable       ... bench:  30,953,024 ns/iter (+/- 1,141,696)
+//! test iter::sort                ... bench:     918,253 ns/iter (+/- 99,863)
+//! test iter::sort_unstable       ... bench:     916,908 ns/iter (+/- 58,050)
+//! test slice::sort               ... bench:     698,643 ns/iter (+/- 46,373)
+//! test slice::sort_by_cached_key ... bench:   1,516,099 ns/iter (+/- 37,853)
+//! test slice::sort_unstable      ... bench:     655,286 ns/iter (+/- 25,017)
+//! test std::binary_heap          ... bench:   6,592,801 ns/iter (+/- 780,590)
+//! test std::sort                 ... bench:  63,192,028 ns/iter (+/- 2,338,506)
+//! test std::sort_by_cached_key   ... bench:  66,058,834 ns/iter (+/- 5,447,387)
+//! test std::sort_unstable        ... bench:  30,953,024 ns/iter (+/- 1,141,696)
 //!
 //! Windows 10 Pro (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
 //!
-//! test iter::max                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
-//! test iter::max_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
-//! test slice::max               ... bench:   2,353,487 ns/iter (+/- 1,140,791)
-//! test slice::max_by_cached_key ... bench:   3,317,930 ns/iter (+/- 1,115,283)
-//! test slice::max_unstable      ... bench:   2,221,975 ns/iter (+/- 1,232,170)
-//! test std::binary_heap         ... bench:   8,666,095 ns/iter (+/- 3,790,987)
-//! test std::sort                ... bench:  73,953,630 ns/iter (+/- 23,036,689)
-//! test std::sort_by_cached_key  ... bench:  79,681,540 ns/iter (+/- 24,554,555)
-//! test std::sort_unstable       ... bench:  35,327,180 ns/iter (+/- 8,306,700)
+//! test iter::sort                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
+//! test iter::sort_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
+//! test slice::sort               ... bench:   2,353,487 ns/iter (+/- 1,140,791)
+//! test slice::sort_by_cached_key ... bench:   3,317,930 ns/iter (+/- 1,115,283)
+//! test slice::sort_unstable      ... bench:   2,221,975 ns/iter (+/- 1,232,170)
+//! test std::binary_heap          ... bench:   8,666,095 ns/iter (+/- 3,790,987)
+//! test std::sort                 ... bench:  73,953,630 ns/iter (+/- 23,036,689)
+//! test std::sort_by_cached_key   ... bench:  79,681,540 ns/iter (+/- 24,554,555)
+//! test std::sort_unstable        ... bench:  35,327,180 ns/iter (+/- 8,306,700)
 //! ```
 
 #![no_std]
@@ -67,13 +67,13 @@ pub mod slice {
     /// # Examples
     /// ```
     /// let mut v = [-5, 4, 1, -3, 2];
-    /// let max = out::slice::max(&mut v, 3);
+    /// let max = out::slice::sort(&mut v, 3);
     /// assert_eq!(max, [1, 2, 4]);
     /// ```
     #[inline]
     #[cfg(feature = "alloc")]
-    pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
-        max_by(v, n, T::cmp)
+    pub fn sort<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
+        sort_by(v, n, T::cmp)
     }
 
     /// Get the `n` largest items with a comparator function.
@@ -86,12 +86,12 @@ pub mod slice {
     /// # Examples
     /// ```
     /// let mut v = [-5, 4, 1, -3, 2];
-    /// let min = out::slice::max_by(&mut v, 3, |a, b| b.cmp(a));
+    /// let min = out::slice::sort_by(&mut v, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [1, -3, -5]);
     /// ```
     #[inline]
     #[cfg(feature = "alloc")]
-    pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
+    pub fn sort_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
         if n == 0 {
             return &mut [];
         }
@@ -137,18 +137,18 @@ pub mod slice {
     /// # Examples
     /// ```
     /// let mut v = [-5_i32, 4, 1, -3, 2];
-    /// let max = out::slice::max_by_key(&mut v, 3, |a| a.abs());
+    /// let max = out::slice::sort_by_key(&mut v, 3, |a| a.abs());
     /// assert_eq!(max, [-3, 4, -5]);
     /// ```
     #[inline]
     #[cfg(feature = "alloc")]
-    pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
-        max_by(v, n, |a, b| f(a).cmp(&f(b)))
+    pub fn sort_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
+        sort_by(v, n, |a, b| f(a).cmp(&f(b)))
     }
 
     /// Get the `n` largest items with a key extraction function.
     ///
-    /// The key function is called only once per element, but for simple key functions `max_by_key`
+    /// The key function is called only once per element, but for simple key functions `sort_by_key`
     /// is likely to be faster.
     ///
     /// This function is stable, i.e. it preserves the order of equal elements.
@@ -159,23 +159,27 @@ pub mod slice {
     /// # Examples
     /// ```
     /// let mut v = [-5_i32, 4, 1, -3, 2];
-    /// let max = out::slice::max_by_cached_key(&mut v, 3, |a| a.abs());
+    /// let max = out::slice::sort_by_cached_key(&mut v, 3, |a| a.abs());
     /// assert_eq!(max, [-3, 4, -5]);
     /// ```
     #[inline]
     #[cfg(feature = "alloc")]
-    pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
+    pub fn sort_by_cached_key<T, K: Ord>(
+        v: &mut [T],
+        n: usize,
+        f: impl FnMut(&T) -> K,
+    ) -> &mut [T] {
         // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
-        macro_rules! max_by_cached_key {
+        macro_rules! sort_by_cached_key {
             ($t:ty) => {{
                 // All elements are unique since they contain the index, so we can use the unstable version.
-                let mut max = crate::iter::max_unstable(v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t)), n);
+                let mut sorted = crate::iter::sort_unstable(v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t)), n);
                 for i in 0..n {
-                    let mut idx = max[i].1;
+                    let mut idx = sorted[i].1;
                     while (idx as usize) < i {
-                        idx = max[idx as usize].1;
+                        idx = sorted[idx as usize].1;
                     }
-                    max[i].1 = idx;
+                    sorted[i].1 = idx;
                     v.swap(i, idx as usize);
                 }
                 &mut v[..n]
@@ -187,20 +191,20 @@ pub mod slice {
         let u32_size = mem::size_of::<(K, u32)>();
         let usize_size = mem::size_of::<(K, usize)>();
         if u8_size < u16_size && v.len() <= u8::max_value() as usize {
-            max_by_cached_key!(u8)
+            sort_by_cached_key!(u8)
         } else if u16_size < u32_size && v.len() <= u16::max_value() as usize {
-            max_by_cached_key!(u16)
+            sort_by_cached_key!(u16)
         } else if u32_size < usize_size && v.len() <= u32::max_value() as usize {
-            max_by_cached_key!(u32)
+            sort_by_cached_key!(u32)
         } else {
-            max_by_cached_key!(usize)
+            sort_by_cached_key!(usize)
         }
     }
 
     /// Get the `n` largest items.
     ///
     /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `max` in most cases.
+    /// This function should be faster than `sort` in most cases.
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -208,18 +212,18 @@ pub mod slice {
     /// # Examples
     /// ```
     /// let mut v = [-5, 4, 1, -3, 2];
-    /// let max = out::slice::max_unstable(&mut v, 3);
+    /// let max = out::slice::sort_unstable(&mut v, 3);
     /// assert_eq!(max, [1, 2, 4]);
     /// ```
     #[inline]
-    pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
-        max_unstable_by(v, n, T::cmp)
+    pub fn sort_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
+        sort_unstable_by(v, n, T::cmp)
     }
 
     /// Get the `n` largest items with a comparator function.
     ///
     /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `max_by` in most cases.
+    /// This function should be faster than `sort_by` in most cases.
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -227,11 +231,11 @@ pub mod slice {
     /// # Examples
     /// ```
     /// let mut v = [-5, 4, 1, -3, 2];
-    /// let min = out::slice::max_unstable_by(&mut v, 3, |a, b| b.cmp(a));
+    /// let min = out::slice::sort_unstable_by(&mut v, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [1, -3, -5]);
     /// ```
     #[inline]
-    pub fn max_unstable_by<T>(
+    pub fn sort_unstable_by<T>(
         v: &mut [T],
         n: usize,
         mut cmp: impl FnMut(&T, &T) -> Ordering,
@@ -274,7 +278,7 @@ pub mod slice {
     /// Get the `n` largest items with a key extraction function.
     ///
     /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `max_by_key` in most cases.
+    /// This function should be faster than `sort_by_key` in most cases.
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -282,16 +286,16 @@ pub mod slice {
     /// # Examples
     /// ```
     /// let mut v = [-5_i32, 4, 1, -3, 2];
-    /// let max = out::slice::max_unstable_by_key(&mut v, 3, |a| a.abs());
+    /// let max = out::slice::sort_unstable_by_key(&mut v, 3, |a| a.abs());
     /// assert_eq!(max, [-3, 4, -5]);
     /// ```
     #[inline]
-    pub fn max_unstable_by_key<T, K: Ord>(
+    pub fn sort_unstable_by_key<T, K: Ord>(
         v: &mut [T],
         n: usize,
         mut f: impl FnMut(&T) -> K,
     ) -> &mut [T] {
-        max_unstable_by(v, n, |a, b| f(a).cmp(&f(b)))
+        sort_unstable_by(v, n, |a, b| f(a).cmp(&f(b)))
     }
 
     /// Shift the left slice to the right while shrinking the right slice.
@@ -328,12 +332,12 @@ pub mod iter {
     ///
     /// # Examples
     /// ```
-    /// let min = out::iter::max(-10..10, 3);
+    /// let min = out::iter::sort(-10..10, 3);
     /// assert_eq!(min, [7, 8, 9]);
     /// ```
     #[inline]
-    pub fn max<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
-        max_by(iter, n, T::cmp)
+    pub fn sort<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
+        sort_by(iter, n, T::cmp)
     }
 
     /// Get the `n` largest items from an iterator with a comparator function.
@@ -345,11 +349,11 @@ pub mod iter {
     ///
     /// # Examples
     /// ```
-    /// let min = out::iter::max_by(-10_i32..10, 3, |a, b| b.cmp(a));
+    /// let min = out::iter::sort_by(-10_i32..10, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [-8, -9, -10]);
     /// ```
     #[inline]
-    pub fn max_by<T>(
+    pub fn sort_by<T>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
         mut cmp: impl FnMut(&T, &T) -> Ordering,
@@ -388,51 +392,51 @@ pub mod iter {
     ///
     /// # Examples
     /// ```
-    /// let max = out::iter::max_by_key(-10_i32..10, 3, |a| a.abs());
+    /// let max = out::iter::sort_by_key(-10_i32..10, 3, |a| a.abs());
     /// assert_eq!(max, [-9, 9, -10]);
     /// ```
     #[inline]
-    pub fn max_by_key<T, K: Ord>(
+    pub fn sort_by_key<T, K: Ord>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
         mut f: impl FnMut(&T) -> K,
     ) -> Vec<T> {
-        max_by(iter, n, |a, b| f(a).cmp(&f(b)))
+        sort_by(iter, n, |a, b| f(a).cmp(&f(b)))
     }
 
     /// Get the `n` largest items from an iterator.
     ///
     /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `max_from_iter` in most cases.
+    /// This function should be faster than `sort_from_iter` in most cases.
     ///
     /// # Panics
     /// Panics if `n > len`.
     ///
     /// # Examples
     /// ```
-    /// let min = out::iter::max_unstable(-10..10, 3);
+    /// let min = out::iter::sort_unstable(-10..10, 3);
     /// assert_eq!(min, [7, 8, 9]);
     /// ```
     #[inline]
-    pub fn max_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
-        max_unstable_by(iter, n, T::cmp)
+    pub fn sort_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
+        sort_unstable_by(iter, n, T::cmp)
     }
 
     /// Get the `n` largest items from an iterator with a comparator function.
     ///
     /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `max_from_iter_by` in most cases.
+    /// This function should be faster than `sort_from_iter_by` in most cases.
     ///
     /// # Panics
     /// Panics if `n > len`.
     ///
     /// # Examples
     /// ```
-    /// let min = out::iter::max_unstable_by(-10..10, 3, |a, b| b.cmp(a));
+    /// let min = out::iter::sort_unstable_by(-10..10, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [-8, -9, -10]);
     /// ```
     #[inline]
-    pub fn max_unstable_by<T>(
+    pub fn sort_unstable_by<T>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
         mut cmp: impl FnMut(&T, &T) -> Ordering,
@@ -465,22 +469,22 @@ pub mod iter {
     /// Get the `n` largest items from an iterator with a key extraction function.
     ///
     /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `max_from_iter_by_key` in most cases.
+    /// This function should be faster than `sort_from_iter_by_key` in most cases.
     ///
     /// # Panics
     /// Panics if `n > len`.
     ///
     /// # Examples
     /// ```
-    /// let max = out::iter::max_unstable_by_key(-10_i32..10, 3, |a| a.abs());
+    /// let max = out::iter::sort_unstable_by_key(-10_i32..10, 3, |a| a.abs());
     /// assert_eq!(max, [9, -9, -10]);
     /// ```
     #[inline]
-    pub fn max_unstable_by_key<T, K: Ord>(
+    pub fn sort_unstable_by_key<T, K: Ord>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
         mut f: impl FnMut(&T) -> K,
     ) -> Vec<T> {
-        max_unstable_by(iter, n, |a, b| f(a).cmp(&f(b)))
+        sort_unstable_by(iter, n, |a, b| f(a).cmp(&f(b)))
     }
 }
