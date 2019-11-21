@@ -1,13 +1,13 @@
 [package]
 name = "out"
-version = "4.0.2"
+version = "5.0.0"
 authors = ["evenorog <evenorog@gmail.com>"]
-description = "Provides functionality to get the n largest items from slices and iterators."
+description = "Provides partial sorting for slices and iterators."
 documentation = "https://docs.rs/out"
 repository = "https://github.com/evenorog/out"
 readme = "README.md"
 license = "MIT/Apache-2.0"
-keywords = ["sort", "iterator", "slice"]
+keywords = ["partial", "sort", "iterator", "slice"]
 categories = ["algorithms", "no-std"]
 exclude = ["/.travis.yml", "/out.svg"]
 edition = "2018"

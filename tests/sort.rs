@@ -39,12 +39,12 @@ mod slice {
     }
 }
 
+#[cfg(feature = "alloc")]
 mod iter {
     use quickcheck::TestResult;
     use quickcheck_macros::quickcheck;
 
     #[quickcheck]
-    #[cfg(feature = "alloc")]
     fn sort(v: Vec<(i32, i32)>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
@@ -57,7 +57,6 @@ mod iter {
     }
 
     #[quickcheck]
-    #[cfg(feature = "alloc")]
     fn sort_unstable(v: Vec<i32>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();

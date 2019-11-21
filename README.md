@@ -4,7 +4,7 @@
 [![Crates.io](https://img.shields.io/crates/v/out.svg)](https://crates.io/crates/out)
 [![Docs](https://docs.rs/out/badge.svg)](https://docs.rs/out)
 
-Provides functionality to get the `n` largest items from slices and iterators.
+Provides partial sorting for slices and iterators.
 
 ```rust
 let mut v = [-5, 4, 1, -3, 2];
