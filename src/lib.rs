@@ -332,8 +332,8 @@ pub mod iter {
     ///
     /// # Examples
     /// ```
-    /// let min = out::iter::sort(-10..10, 3);
-    /// assert_eq!(min, [7, 8, 9]);
+    /// let max = out::iter::sort(-10..10, 3);
+    /// assert_eq!(max, [7, 8, 9]);
     /// ```
     #[inline]
     pub fn sort<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
@@ -414,8 +414,8 @@ pub mod iter {
     ///
     /// # Examples
     /// ```
-    /// let min = out::iter::sort_unstable(-10..10, 3);
-    /// assert_eq!(min, [7, 8, 9]);
+    /// let max = out::iter::sort_unstable(-10..10, 3);
+    /// assert_eq!(max, [7, 8, 9]);
     /// ```
     #[inline]
     pub fn sort_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
