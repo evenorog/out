@@ -70,7 +70,6 @@ pub mod slice {
     /// let max = out::slice::sort(&mut v, 3);
     /// assert_eq!(max, [1, 2, 4]);
     /// ```
-    #[inline]
     #[cfg(feature = "alloc")]
     pub fn sort<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
         sort_by(v, n, T::cmp)
@@ -89,7 +88,6 @@ pub mod slice {
     /// let min = out::slice::sort_by(&mut v, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [1, -3, -5]);
     /// ```
-    #[inline]
     #[cfg(feature = "alloc")]
     pub fn sort_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
         if n == 0 {
@@ -140,7 +138,6 @@ pub mod slice {
     /// let max = out::slice::sort_by_key(&mut v, 3, |a| a.abs());
     /// assert_eq!(max, [-3, 4, -5]);
     /// ```
-    #[inline]
     #[cfg(feature = "alloc")]
     pub fn sort_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
         sort_by(v, n, |a, b| f(a).cmp(&f(b)))
@@ -162,7 +159,6 @@ pub mod slice {
     /// let max = out::slice::sort_by_cached_key(&mut v, 3, |a| a.abs());
     /// assert_eq!(max, [-3, 4, -5]);
     /// ```
-    #[inline]
     #[cfg(feature = "alloc")]
     pub fn sort_by_cached_key<T, K: Ord>(
         v: &mut [T],
@@ -215,7 +211,6 @@ pub mod slice {
     /// let max = out::slice::sort_unstable(&mut v, 3);
     /// assert_eq!(max, [1, 2, 4]);
     /// ```
-    #[inline]
     pub fn sort_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
         sort_unstable_by(v, n, T::cmp)
     }
@@ -234,7 +229,6 @@ pub mod slice {
     /// let min = out::slice::sort_unstable_by(&mut v, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [1, -3, -5]);
     /// ```
-    #[inline]
     pub fn sort_unstable_by<T>(
         v: &mut [T],
         n: usize,
@@ -289,7 +283,6 @@ pub mod slice {
     /// let max = out::slice::sort_unstable_by_key(&mut v, 3, |a| a.abs());
     /// assert_eq!(max, [-3, 4, -5]);
     /// ```
-    #[inline]
     pub fn sort_unstable_by_key<T, K: Ord>(
         v: &mut [T],
         n: usize,
@@ -306,7 +299,6 @@ pub mod slice {
     ///
     /// # Safety
     /// The two slices must be next to each other and `right` can not be empty.
-    #[inline]
     unsafe fn shift_slice_right<T>(left: &mut &mut [T], right: &mut &mut [T]) {
         let len = left.len();
         let ptr = left.as_mut_ptr();
@@ -335,7 +327,6 @@ pub mod iter {
     /// let max = out::iter::sort(-10..10, 3);
     /// assert_eq!(max, [7, 8, 9]);
     /// ```
-    #[inline]
     pub fn sort<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
         sort_by(iter, n, T::cmp)
     }
@@ -352,7 +343,6 @@ pub mod iter {
     /// let min = out::iter::sort_by(-10_i32..10, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [-8, -9, -10]);
     /// ```
-    #[inline]
     pub fn sort_by<T>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
@@ -395,7 +385,6 @@ pub mod iter {
     /// let max = out::iter::sort_by_key(-10_i32..10, 3, |a| a.abs());
     /// assert_eq!(max, [-9, 9, -10]);
     /// ```
-    #[inline]
     pub fn sort_by_key<T, K: Ord>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
@@ -417,7 +406,6 @@ pub mod iter {
     /// let max = out::iter::sort_unstable(-10..10, 3);
     /// assert_eq!(max, [7, 8, 9]);
     /// ```
-    #[inline]
     pub fn sort_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
         sort_unstable_by(iter, n, T::cmp)
     }
@@ -435,7 +423,6 @@ pub mod iter {
     /// let min = out::iter::sort_unstable_by(-10..10, 3, |a, b| b.cmp(a));
     /// assert_eq!(min, [-8, -9, -10]);
     /// ```
-    #[inline]
     pub fn sort_unstable_by<T>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
@@ -479,7 +466,6 @@ pub mod iter {
     /// let max = out::iter::sort_unstable_by_key(-10_i32..10, 3, |a| a.abs());
     /// assert_eq!(max, [9, -9, -10]);
     /// ```
-    #[inline]
     pub fn sort_unstable_by_key<T, K: Ord>(
         iter: impl IntoIterator<Item = T>,
         n: usize,
