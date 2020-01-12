@@ -11,7 +11,7 @@
 //!
 //! # Benchmarks
 //!
-//! n = `100`, len = `1_000_000`:
+//! *n = 100, len = 1_000_000:*
 //!
 //! ```text
 //! openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
@@ -25,8 +25,10 @@
 //! test std::sort                 ... bench:  63,192,028 ns/iter (+/- 2,338,506)
 //! test std::sort_by_cached_key   ... bench:  66,058,834 ns/iter (+/- 5,447,387)
 //! test std::sort_unstable        ... bench:  30,953,024 ns/iter (+/- 1,141,696)
+//! ```
 //!
-//! Windows 10 Pro (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
+//! ```text
+//! Windows 10 (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
 //!
 //! test iter::sort                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
 //! test iter::sort_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
@@ -40,15 +42,8 @@
 //! ```
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/out/5.0.0")]
-#![deny(
-    bad_style,
-    bare_trait_objects,
-    missing_debug_implementations,
-    missing_docs,
-    unused_import_braces,
-    unused_qualifications
-)]
+#![doc(html_root_url = "https://docs.rs/out")]
+#![deny(missing_docs)]
 
 #[cfg(feature = "alloc")]
 extern crate alloc;

@@ -9,7 +9,7 @@ readme = "README.md"
 license = "MIT/Apache-2.0"
 keywords = ["partial", "sort", "iterator", "slice"]
 categories = ["algorithms", "no-std"]
-exclude = ["/.travis.yml", "/out.svg"]
+exclude = ["/.travis.yml"]
 edition = "2018"
 
 [features]
@@ -21,6 +21,6 @@ travis-ci = { repository = "evenorog/out" }
 maintenance = { status = "actively-developed" }
 
 [dev-dependencies]
-rand = { version = "0.7.2", features = ["small_rng"]}
-quickcheck = "0.9.0"
-quickcheck_macros = "0.8.0"
+rand = { version = "0.7.3", features = ["small_rng"]}
+quickcheck = "0.9.1"
+quickcheck_macros = "0.9.1"

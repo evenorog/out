@@ -1,4 +1,4 @@
-![out](https://raw.githubusercontent.com/evenorog/out/master/out.svg?sanitize=true)
+# out
 
 [![Travis](https://travis-ci.com/evenorog/out.svg?branch=master)](https://travis-ci.com/evenorog/out)
 [![Crates.io](https://img.shields.io/crates/v/out.svg)](https://crates.io/crates/out)
@@ -17,7 +17,7 @@ converting to a heap when `n` is small compared to the length of the slice or it
 
 ## Benchmarks
 
-n = `100`, len = `1_000_000`:
+*n = 100, len = 1_000_000:*
 
 ```
 openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
@@ -31,8 +31,10 @@ test std::binary_heap          ... bench:   6,592,801 ns/iter (+/- 780,590)
 test std::sort                 ... bench:  63,192,028 ns/iter (+/- 2,338,506)
 test std::sort_by_cached_key   ... bench:  66,058,834 ns/iter (+/- 5,447,387)
 test std::sort_unstable        ... bench:  30,953,024 ns/iter (+/- 1,141,696)
+```
 
-Windows 10 Pro (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
+```
+Windows 10 (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
 
 test iter::sort                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
 test iter::sort_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
