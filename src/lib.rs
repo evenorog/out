@@ -164,7 +164,8 @@ pub mod slice {
         macro_rules! sort_by_cached_key {
             ($t:ty) => {{
                 // All elements are unique since they contain the index, so we can use the unstable version.
-                let mut sorted = crate::iter::sort_unstable(v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t)), n);
+                let iter = v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t));
+                let mut sorted = crate::iter::sort_unstable(iter, n);
                 for i in 0..n {
                     let mut idx = sorted[i].1;
                     while (idx as usize) < i {
@@ -177,15 +178,15 @@ pub mod slice {
             }};
         }
         // Find the smallest type possible for the index, to reduce the amount of allocation needed.
-        let u8_size = mem::size_of::<(K, u8)>();
-        let u16_size = mem::size_of::<(K, u16)>();
-        let u32_size = mem::size_of::<(K, u32)>();
-        let usize_size = mem::size_of::<(K, usize)>();
-        if u8_size < u16_size && v.len() <= u8::max_value() as usize {
+        let sz_u8 = mem::size_of::<(K, u8)>();
+        let sz_u16 = mem::size_of::<(K, u16)>();
+        let sz_u32 = mem::size_of::<(K, u32)>();
+        let sz_usize = mem::size_of::<(K, usize)>();
+        if sz_u8 < sz_u16 && v.len() <= u8::max_value() as usize {
             sort_by_cached_key!(u8)
-        } else if u16_size < u32_size && v.len() <= u16::max_value() as usize {
+        } else if sz_u16 < sz_u32 && v.len() <= u16::max_value() as usize {
             sort_by_cached_key!(u16)
-        } else if u32_size < usize_size && v.len() <= u32::max_value() as usize {
+        } else if sz_u32 < sz_usize && v.len() <= u32::max_value() as usize {
             sort_by_cached_key!(u32)
         } else {
             sort_by_cached_key!(usize)

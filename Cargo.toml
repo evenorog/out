@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "5.0.0"
+version = "5.0.1"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides partial sorting for slices and iterators."
 documentation = "https://docs.rs/out"
