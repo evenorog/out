@@ -49,12 +49,22 @@
 extern crate alloc;
 
 /// Functions for use with slices.
+///
+/// **NOTE: The sorted slice is not guaranteed to be at the front of the input slice.**
+///
+/// # Examples
+/// ```
+/// let mut v = [-5, 4, 1, -3, 2];
+/// let max = out::slice::sort(&mut v, 3);
+/// assert_eq!(max, [1, 2, 4]);
+/// assert_eq!(v, [-3, 1, 2, 4, -5]);
+/// ```
 pub mod slice {
     use core::{cmp::Ordering, mem, slice};
 
-    /// Get the `n` largest items.
+    /// Returns the `n` largest items.
     ///
-    /// This function is stable, i.e. it preserves the order of equal elements.
+    /// This sort is stable, i.e. it preserves the order of equal elements.
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -70,9 +80,9 @@ pub mod slice {
         sort_by(v, n, T::cmp)
     }
 
-    /// Get the `n` largest items with a comparator function.
+    /// Returns the `n` largest items with a comparator function.
     ///
-    /// This function is stable, i.e. it preserves the order of equal elements.
+    /// This sort is stable, i.e. it preserves the order of equal elements.
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -120,9 +130,9 @@ pub mod slice {
         left
     }
 
-    /// Get the `n` largest items with a key extraction function.
+    /// Returns the `n` largest items with a key extraction function.
     ///
-    /// This function is stable, i.e. it preserves the order of equal elements.
+    /// This sort is stable, i.e. it preserves the order of equal elements.
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -138,12 +148,12 @@ pub mod slice {
         sort_by(v, n, |a, b| f(a).cmp(&f(b)))
     }
 
-    /// Get the `n` largest items with a key extraction function.
+    /// Returns the `n` largest items with a key extraction function.
     ///
     /// The key function is called only once per element, but for simple key functions `sort_by_key`
     /// is likely to be faster.
     ///
-    /// This function is stable, i.e. it preserves the order of equal elements.
+    /// This sort is stable, i.e. it preserves the order of equal elements.
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -193,10 +203,10 @@ pub mod slice {
         }
     }
 
-    /// Get the `n` largest items.
+    /// Returns the `n` largest items.
     ///
-    /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `sort` in most cases.
+    /// This sort is unstable (i.e. may reorder equal elements), in-place
+    /// (i.e. does not allocate), and typically faster than [`sort`](fn.sort.html).
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -211,10 +221,10 @@ pub mod slice {
         sort_unstable_by(v, n, T::cmp)
     }
 
-    /// Get the `n` largest items with a comparator function.
+    /// Returns the `n` largest items with a comparator function.
     ///
-    /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `sort_by` in most cases.
+    /// This sort is unstable (i.e. may reorder equal elements), in-place
+    /// (i.e. does not allocate), and typically faster than [`sort_by`](fn.sort_by.html).
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -265,10 +275,10 @@ pub mod slice {
         left
     }
 
-    /// Get the `n` largest items with a key extraction function.
+    /// Returns the `n` largest items with a key extraction function.
     ///
-    /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `sort_by_key` in most cases.
+    /// This sort is unstable (i.e. may reorder equal elements), in-place
+    /// (i.e. does not allocate), and typically faster than [`sort_by_key`](fn.sort_by_key.html).
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -306,12 +316,18 @@ pub mod slice {
 }
 
 /// Functions for use with iterators.
+///
+/// # Examples
+/// ```
+/// let max = out::iter::sort(-10..10, 3);
+/// assert_eq!(max, [7, 8, 9]);
+/// ```
 #[cfg(feature = "alloc")]
 pub mod iter {
     use alloc::vec::Vec;
     use core::cmp::Ordering;
 
-    /// Get the `n` largest items from an iterator.
+    /// Returns the `n` largest items from an iterator.
     ///
     /// This function is stable, i.e. it preserves the order of equal elements.
     ///
@@ -327,7 +343,7 @@ pub mod iter {
         sort_by(iter, n, T::cmp)
     }
 
-    /// Get the `n` largest items from an iterator with a comparator function.
+    /// Returns the `n` largest items from an iterator with a comparator function.
     ///
     /// This function is stable, i.e. it preserves the order of equal elements.
     ///
@@ -369,7 +385,7 @@ pub mod iter {
         v
     }
 
-    /// Get the `n` largest items from an iterator with a key extraction function.
+    /// Returns the `n` largest items from an iterator with a key extraction function.
     ///
     /// This function is stable, i.e. it preserves the order of equal elements.
     ///
@@ -389,10 +405,10 @@ pub mod iter {
         sort_by(iter, n, |a, b| f(a).cmp(&f(b)))
     }
 
-    /// Get the `n` largest items from an iterator.
+    /// Returns the `n` largest items from an iterator.
     ///
-    /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `sort_from_iter` in most cases.
+    /// This sort is unstable (i.e. may reorder equal elements)
+    /// and typically faster than [`sort`](fn.sort.html).
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -406,10 +422,10 @@ pub mod iter {
         sort_unstable_by(iter, n, T::cmp)
     }
 
-    /// Get the `n` largest items from an iterator with a comparator function.
+    /// Returns the `n` largest items from an iterator with a comparator function.
     ///
-    /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `sort_from_iter_by` in most cases.
+    /// This sort is unstable (i.e. may reorder equal elements)
+    /// and typically faster than [`sort_by`](fn.sort_by.html).
     ///
     /// # Panics
     /// Panics if `n > len`.
@@ -449,10 +465,10 @@ pub mod iter {
         v
     }
 
-    /// Get the `n` largest items from an iterator with a key extraction function.
+    /// Returns the `n` largest items from an iterator with a key extraction function.
     ///
-    /// This function is not stable, i.e. it may not preserve the order of equal elements.
-    /// This function should be faster than `sort_from_iter_by_key` in most cases.
+    /// This sort is unstable (i.e. may reorder equal elements)
+    /// and typically faster than [`sort_by_key`](fn.sort_by_key.html).
     ///
     /// # Panics
     /// Panics if `n > len`.

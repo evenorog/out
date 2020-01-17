@@ -22,5 +22,5 @@ maintenance = { status = "actively-developed" }
 
 [dev-dependencies]
 rand = { version = "0.7.3", features = ["small_rng"]}
-quickcheck = "0.9.1"
+quickcheck = "0.9.2"
 quickcheck_macros = "0.9.1"
