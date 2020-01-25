@@ -4,7 +4,7 @@ mod slice {
 
     #[quickcheck]
     #[cfg(feature = "alloc")]
-    fn sort(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
+    fn max(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
@@ -16,7 +16,7 @@ mod slice {
     }
 
     #[quickcheck]
-    fn sort_unstable(mut v: Vec<i32>, n: usize) -> TestResult {
+    fn max_unstable(mut v: Vec<i32>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
@@ -27,7 +27,7 @@ mod slice {
 
     #[quickcheck]
     #[cfg(feature = "alloc")]
-    fn sort_by_cached_key(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
+    fn max_by_cached_key(mut v: Vec<(i32, i32)>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
@@ -45,7 +45,7 @@ mod iter {
     use quickcheck_macros::quickcheck;
 
     #[quickcheck]
-    fn sort(v: Vec<(i32, i32)>, n: usize) -> TestResult {
+    fn max(v: Vec<(i32, i32)>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }
@@ -57,7 +57,7 @@ mod iter {
     }
 
     #[quickcheck]
-    fn sort_unstable(v: Vec<i32>, n: usize) -> TestResult {
+    fn max_unstable(v: Vec<i32>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();
         }

@@ -10,6 +10,8 @@ Provides fast min and max functionality for collections.
 let mut v = [-5, 4, 1, -3, 2];
 let max = out::slice::max(&mut v, 3);
 assert_eq!(max, [1, 2, 4]);
+let min = out::slice::min(&mut v, 3);
+assert_eq!(min, [1, -3, -5]);
 ```
 
 This library can provide significant performance increase compared to sorting or

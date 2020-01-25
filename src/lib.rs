@@ -4,6 +4,8 @@
 //! let mut v = [-5, 4, 1, -3, 2];
 //! let max = out::slice::max(&mut v, 3);
 //! assert_eq!(max, [1, 2, 4]);
+//! let min = out::slice::min(&mut v, 3);
+//! assert_eq!(min, [1, -3, -5]);
 //! ```
 //!
 //! This library can provide significant performance increase compared to sorting or
@@ -161,7 +163,7 @@ pub mod slice {
     /// ```
     #[cfg(feature = "alloc")]
     pub fn min_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
-        max_by(v, n, move |a, b| cmp(b, a))
+        max_by(v, n, |a, b| cmp(b, a))
     }
 
     /// Returns the `n` largest items with a key extraction function.
@@ -411,7 +413,7 @@ pub mod slice {
         n: usize,
         mut cmp: impl FnMut(&T, &T) -> Ordering,
     ) -> &mut [T] {
-        max_unstable_by(v, n, move |a, b| cmp(b, a))
+        max_unstable_by(v, n, |a, b| cmp(b, a))
     }
 
     /// Returns the `n` largest items with a key extraction function.
@@ -579,7 +581,7 @@ pub mod iter {
         n: usize,
         mut cmp: impl FnMut(&T, &T) -> Ordering,
     ) -> Vec<T> {
-        max_by(iter, n, move |a, b| cmp(b, a))
+        max_by(iter, n, |a, b| cmp(b, a))
     }
 
     /// Returns the `n` largest items from an iterator with a key extraction function.
@@ -717,7 +719,7 @@ pub mod iter {
         n: usize,
         mut cmp: impl FnMut(&T, &T) -> Ordering,
     ) -> Vec<T> {
-        max_unstable_by(iter, n, move |a, b| cmp(b, a))
+        max_unstable_by(iter, n, |a, b| cmp(b, a))
     }
 
     /// Returns the `n` largest items from an iterator with a key extraction function.

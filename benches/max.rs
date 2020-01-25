@@ -18,7 +18,7 @@ mod slice {
     use crate::{create_random_vec, N};
 
     #[bench]
-    fn sort(b: &mut test::Bencher) {
+    fn max(b: &mut test::Bencher) {
         let v = create_random_vec();
         b.iter(|| {
             let mut v = v.clone();
@@ -27,7 +27,7 @@ mod slice {
     }
 
     #[bench]
-    fn sort_unstable(b: &mut test::Bencher) {
+    fn max_unstable(b: &mut test::Bencher) {
         let v = create_random_vec();
         b.iter(|| {
             let mut v = v.clone();
@@ -36,7 +36,7 @@ mod slice {
     }
 
     #[bench]
-    fn sort_by_cached_key(b: &mut test::Bencher) {
+    fn max_by_cached_key(b: &mut test::Bencher) {
         let v = create_random_vec();
         b.iter(|| {
             let mut v = v.clone();
@@ -49,7 +49,7 @@ mod iter {
     use crate::{create_random_vec, N};
 
     #[bench]
-    fn sort(b: &mut test::Bencher) {
+    fn max(b: &mut test::Bencher) {
         let v = create_random_vec();
         b.iter(|| {
             let v = v.clone();
@@ -58,7 +58,7 @@ mod iter {
     }
 
     #[bench]
-    fn sort_unstable(b: &mut test::Bencher) {
+    fn max_unstable(b: &mut test::Bencher) {
         let v = create_random_vec();
         b.iter(|| {
             let v = v.clone();
