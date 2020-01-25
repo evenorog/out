@@ -22,7 +22,7 @@ mod slice {
         let v = create_random_vec();
         b.iter(|| {
             let mut v = v.clone();
-            test::black_box(out::slice::sort(&mut v, N));
+            test::black_box(out::slice::max(&mut v, N));
         });
     }
 
@@ -31,7 +31,7 @@ mod slice {
         let v = create_random_vec();
         b.iter(|| {
             let mut v = v.clone();
-            test::black_box(out::slice::sort_unstable(&mut v, N));
+            test::black_box(out::slice::max_unstable(&mut v, N));
         });
     }
 
@@ -40,7 +40,7 @@ mod slice {
         let v = create_random_vec();
         b.iter(|| {
             let mut v = v.clone();
-            test::black_box(out::slice::sort_by_cached_key(&mut v, N, |&a| a));
+            test::black_box(out::slice::max_by_cached_key(&mut v, N, |&a| a));
         });
     }
 }
@@ -53,7 +53,7 @@ mod iter {
         let v = create_random_vec();
         b.iter(|| {
             let v = v.clone();
-            test::black_box(out::iter::sort(v, N));
+            test::black_box(out::iter::max(v, N));
         });
     }
 
@@ -62,7 +62,7 @@ mod iter {
         let v = create_random_vec();
         b.iter(|| {
             let v = v.clone();
-            test::black_box(out::iter::sort_unstable(v, N));
+            test::black_box(out::iter::max_unstable(v, N));
         });
     }
 }

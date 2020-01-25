@@ -11,7 +11,7 @@ mod slice {
         let mut s = v.clone();
         s.sort_by(|(a, _), (b, _)| a.cmp(b));
         TestResult::from_bool(
-            &mut s[v.len() - n..] == out::slice::sort_by(&mut v, n, |(a, _), (b, _)| a.cmp(b)),
+            &mut s[v.len() - n..] == out::slice::max_by(&mut v, n, |(a, _), (b, _)| a.cmp(b)),
         )
     }
 
@@ -22,7 +22,7 @@ mod slice {
         }
         let mut s = v.clone();
         s.sort_unstable();
-        TestResult::from_bool(&mut s[v.len() - n..] == out::slice::sort_unstable(&mut v, n))
+        TestResult::from_bool(&mut s[v.len() - n..] == out::slice::max_unstable(&mut v, n))
     }
 
     #[quickcheck]
@@ -34,7 +34,7 @@ mod slice {
         let mut s = v.clone();
         s.sort_by_cached_key(|&(a, _)| a);
         TestResult::from_bool(
-            &mut s[v.len() - n..] == out::slice::sort_by_cached_key(&mut v, n, |&(a, _)| a),
+            &mut s[v.len() - n..] == out::slice::max_by_cached_key(&mut v, n, |&(a, _)| a),
         )
     }
 }
@@ -52,7 +52,7 @@ mod iter {
         let mut s = v.clone();
         s.sort_by(|(a, _), (b, _)| a.cmp(b));
         TestResult::from_bool(
-            s[v.len() - n..] == out::iter::sort_by(v, n, |(a, _), (b, _)| a.cmp(b))[..],
+            s[v.len() - n..] == out::iter::max_by(v, n, |(a, _), (b, _)| a.cmp(b))[..],
         )
     }
 
@@ -63,6 +63,6 @@ mod iter {
         }
         let mut s = v.clone();
         s.sort_unstable();
-        TestResult::from_bool(s[v.len() - n..] == out::iter::sort_unstable(v, n)[..])
+        TestResult::from_bool(s[v.len() - n..] == out::iter::max_unstable(v, n)[..])
     }
 }

@@ -2,7 +2,7 @@
 name = "out"
 version = "5.0.1"
 authors = ["evenorog <evenorog@gmail.com>"]
-description = "Provides partial sorting for slices and iterators."
+description = "Provides fast min and max functionality for collections."
 documentation = "https://docs.rs/out"
 repository = "https://github.com/evenorog/out"
 readme = "README.md"
