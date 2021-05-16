@@ -188,35 +188,36 @@ pub mod slice {
     #[cfg(feature = "alloc")]
     pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
         // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
-        macro_rules! max_by_cached_key {
-            ($t:ty) => {{
+        macro_rules! max {
+            ($t:ty, $slice:ident, $n:ident, $f: ident) => {{
                 // All elements are unique since they contain the index, so we can use the unstable version.
-                let iter = v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t));
-                let mut sorted = crate::iter::max_unstable(iter, n);
-                for i in 0..n {
+                let iter = $slice.iter().map($f).enumerate().map(|(i, k)| (k, i as $t));
+                let mut sorted = crate::iter::max_unstable(iter, $n);
+                for i in 0..$n {
                     let mut idx = sorted[i].1;
                     while (idx as usize) < i {
                         idx = sorted[idx as usize].1;
                     }
                     sorted[i].1 = idx;
-                    v.swap(i, idx as usize);
+                    $slice.swap(i, idx as usize);
                 }
-                &mut v[..n]
+                &mut $slice[..$n]
             }};
         }
+
         // Find the smallest type possible for the index, to reduce the amount of allocation needed.
         let sz_u8 = mem::size_of::<(K, u8)>();
         let sz_u16 = mem::size_of::<(K, u16)>();
         let sz_u32 = mem::size_of::<(K, u32)>();
         let sz_usize = mem::size_of::<(K, usize)>();
-        if sz_u8 < sz_u16 && v.len() <= u8::max_value() as usize {
-            max_by_cached_key!(u8)
-        } else if sz_u16 < sz_u32 && v.len() <= u16::max_value() as usize {
-            max_by_cached_key!(u16)
-        } else if sz_u32 < sz_usize && v.len() <= u32::max_value() as usize {
-            max_by_cached_key!(u32)
+        if sz_u8 < sz_u16 && v.len() <= u8::MAX as usize {
+            max!(u8, v, n, f)
+        } else if sz_u16 < sz_u32 && v.len() <= u16::MAX as usize {
+            max!(u16, v, n, f)
+        } else if sz_u32 < sz_usize && v.len() <= u32::MAX as usize {
+            max!(u32, v, n, f)
         } else {
-            max_by_cached_key!(usize)
+            max!(usize, v, n, f)
         }
     }
 
@@ -239,20 +240,20 @@ pub mod slice {
     #[cfg(feature = "alloc")]
     pub fn min_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
         // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
-        macro_rules! min_by_cached_key {
-            ($t:ty) => {{
+        macro_rules! min {
+            ($t:ty, $slice:ident, $n:ident, $f: ident) => {{
                 // All elements are unique since they contain the index, so we can use the unstable version.
-                let iter = v.iter().map(f).enumerate().map(|(i, k)| (k, i as $t));
-                let mut sorted = crate::iter::min_unstable(iter, n);
-                for i in 0..n {
+                let iter = $slice.iter().map($f).enumerate().map(|(i, k)| (k, i as $t));
+                let mut sorted = crate::iter::min_unstable(iter, $n);
+                for i in 0..$n {
                     let mut idx = sorted[i].1;
                     while (idx as usize) < i {
                         idx = sorted[idx as usize].1;
                     }
                     sorted[i].1 = idx;
-                    v.swap(i, idx as usize);
+                    $slice.swap(i, idx as usize);
                 }
-                &mut v[..n]
+                &mut $slice[..$n]
             }};
         }
         // Find the smallest type possible for the index, to reduce the amount of allocation needed.
@@ -260,14 +261,14 @@ pub mod slice {
         let sz_u16 = mem::size_of::<(K, u16)>();
         let sz_u32 = mem::size_of::<(K, u32)>();
         let sz_usize = mem::size_of::<(K, usize)>();
-        if sz_u8 < sz_u16 && v.len() <= u8::max_value() as usize {
-            min_by_cached_key!(u8)
-        } else if sz_u16 < sz_u32 && v.len() <= u16::max_value() as usize {
-            min_by_cached_key!(u16)
-        } else if sz_u32 < sz_usize && v.len() <= u32::max_value() as usize {
-            min_by_cached_key!(u32)
+        if sz_u8 < sz_u16 && v.len() <= u8::MAX as usize {
+            min!(u8, v, n, f)
+        } else if sz_u16 < sz_u32 && v.len() <= u16::MAX as usize {
+            min!(u16, v, n, f)
+        } else if sz_u32 < sz_usize && v.len() <= u32::MAX as usize {
+            min!(u32, v, n, f)
         } else {
-            min_by_cached_key!(usize)
+            min!(usize, v, n, f)
         }
     }
 
