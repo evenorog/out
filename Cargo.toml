@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "6.0.0"
+version = "6.1.0"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides fast min and max functionality for collections."
 documentation = "https://docs.rs/out"
@@ -10,7 +10,7 @@ license = "MIT OR Apache-2.0"
 keywords = ["min", "max", "iterator", "slice"]
 categories = ["algorithms", "no-std"]
 exclude = ["/.travis.yml"]
-edition = "2018"
+edition = "2021"
 
 [features]
 default = ["alloc"]
@@ -21,6 +21,6 @@ travis-ci = { repository = "evenorog/out" }
 maintenance = { status = "actively-developed" }
 
 [dev-dependencies]
-rand = { version = "0.7.3", features = ["small_rng"]}
-quickcheck = "0.9.2"
-quickcheck_macros = "0.9.1"
+rand = { version = "0.8", features = ["small_rng"]}
+quickcheck = "1"
+quickcheck_macros = "1.0.0"
