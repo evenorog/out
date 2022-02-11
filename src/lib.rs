@@ -29,6 +29,23 @@ extern crate alloc;
 pub mod slice {
     use core::{cmp::Ordering, mem, slice};
 
+    /// Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
+    macro_rules! find_n {
+        ($t:ty, $slice:ident, $n:ident, $f: ident, $sort: expr) => {{
+            let iter = $slice.iter().map($f).enumerate().map(|(i, k)| (k, i as $t));
+            let mut sorted = $sort(iter, $n);
+            for i in 0..$n {
+                let mut idx = sorted[i].1;
+                while (idx as usize) < i {
+                    idx = sorted[idx as usize].1;
+                }
+                sorted[i].1 = idx;
+                $slice.swap(i, idx as usize);
+            }
+            &mut $slice[..$n]
+        }};
+    }
+
     /// Returns the `n` largest items.
     ///
     /// This sort is stable, i.e. it preserves the order of equal elements.
@@ -90,26 +107,9 @@ pub mod slice {
             if cmp(&right[i], &left[0]) == Ordering::Less {
                 i += 1;
             } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
-                right.swap(i, 0);
-                let mut j = n - 1;
-                if cmp(&left[j], &right[0]) == Ordering::Greater {
-                    mem::swap(&mut left[j], &mut right[0]);
-                    while cmp(&left[j], &left[j - 1]) == Ordering::Less {
-                        left.swap(j, j - 1);
-                        j -= 1;
-                    }
-                }
-                unsafe {
-                    shift_slice_right(&mut left, &mut right);
-                }
+                swap_gt_half(&mut left, &mut right, n, i, &mut cmp);
             } else {
-                mem::swap(&mut left[0], &mut right[i]);
-                let mut j = 0;
-                while j < n - 1 && cmp(&left[j], &left[j + 1]) != Ordering::Less {
-                    left.swap(j, j + 1);
-                    j += 1;
-                }
-                i += 1;
+                swap_lt_half(left, right, n, &mut i, &mut cmp);
             }
         }
         left
@@ -187,37 +187,19 @@ pub mod slice {
     /// ```
     #[cfg(feature = "alloc")]
     pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
-        // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
-        macro_rules! max {
-            ($t:ty, $slice:ident, $n:ident, $f: ident) => {{
-                // All elements are unique since they contain the index, so we can use the unstable version.
-                let iter = $slice.iter().map($f).enumerate().map(|(i, k)| (k, i as $t));
-                let mut sorted = crate::iter::max_unstable(iter, $n);
-                for i in 0..$n {
-                    let mut idx = sorted[i].1;
-                    while (idx as usize) < i {
-                        idx = sorted[idx as usize].1;
-                    }
-                    sorted[i].1 = idx;
-                    $slice.swap(i, idx as usize);
-                }
-                &mut $slice[..$n]
-            }};
-        }
-
         // Find the smallest type possible for the index, to reduce the amount of allocation needed.
         let sz_u8 = mem::size_of::<(K, u8)>();
         let sz_u16 = mem::size_of::<(K, u16)>();
         let sz_u32 = mem::size_of::<(K, u32)>();
         let sz_usize = mem::size_of::<(K, usize)>();
         if sz_u8 < sz_u16 && v.len() <= u8::MAX as usize {
-            max!(u8, v, n, f)
+            find_n!(u8, v, n, f, crate::iter::max_unstable)
         } else if sz_u16 < sz_u32 && v.len() <= u16::MAX as usize {
-            max!(u16, v, n, f)
+            find_n!(u16, v, n, f, crate::iter::max_unstable)
         } else if sz_u32 < sz_usize && v.len() <= u32::MAX as usize {
-            max!(u32, v, n, f)
+            find_n!(u32, v, n, f, crate::iter::max_unstable)
         } else {
-            max!(usize, v, n, f)
+            find_n!(usize, v, n, f, crate::iter::max_unstable)
         }
     }
 
@@ -239,36 +221,19 @@ pub mod slice {
     /// ```
     #[cfg(feature = "alloc")]
     pub fn min_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
-        // Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
-        macro_rules! min {
-            ($t:ty, $slice:ident, $n:ident, $f: ident) => {{
-                // All elements are unique since they contain the index, so we can use the unstable version.
-                let iter = $slice.iter().map($f).enumerate().map(|(i, k)| (k, i as $t));
-                let mut sorted = crate::iter::min_unstable(iter, $n);
-                for i in 0..$n {
-                    let mut idx = sorted[i].1;
-                    while (idx as usize) < i {
-                        idx = sorted[idx as usize].1;
-                    }
-                    sorted[i].1 = idx;
-                    $slice.swap(i, idx as usize);
-                }
-                &mut $slice[..$n]
-            }};
-        }
         // Find the smallest type possible for the index, to reduce the amount of allocation needed.
         let sz_u8 = mem::size_of::<(K, u8)>();
         let sz_u16 = mem::size_of::<(K, u16)>();
         let sz_u32 = mem::size_of::<(K, u32)>();
         let sz_usize = mem::size_of::<(K, usize)>();
         if sz_u8 < sz_u16 && v.len() <= u8::MAX as usize {
-            min!(u8, v, n, f)
+            find_n!(u8, v, n, f, crate::iter::min_unstable)
         } else if sz_u16 < sz_u32 && v.len() <= u16::MAX as usize {
-            min!(u16, v, n, f)
+            find_n!(u16, v, n, f, crate::iter::min_unstable)
         } else if sz_u32 < sz_usize && v.len() <= u32::MAX as usize {
-            min!(u32, v, n, f)
+            find_n!(u32, v, n, f, crate::iter::min_unstable)
         } else {
-            min!(usize, v, n, f)
+            find_n!(usize, v, n, f, crate::iter::min_unstable)
         }
     }
 
@@ -337,26 +302,9 @@ pub mod slice {
             if cmp(&left[0], &right[i]) == Ordering::Greater {
                 i += 1;
             } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
-                right.swap(i, 0);
-                let mut j = n - 1;
-                if cmp(&left[j], &right[0]) == Ordering::Greater {
-                    mem::swap(&mut left[j], &mut right[0]);
-                    while cmp(&left[j], &left[j - 1]) == Ordering::Less {
-                        left.swap(j, j - 1);
-                        j -= 1;
-                    }
-                }
-                unsafe {
-                    shift_slice_right(&mut left, &mut right);
-                }
+                swap_gt_half(&mut left, &mut right, n, i, &mut cmp);
             } else {
-                mem::swap(&mut left[0], &mut right[i]);
-                let mut j = 0;
-                while j < n - 1 && cmp(&left[j], &left[j + 1]) == Ordering::Greater {
-                    left.swap(j, j + 1);
-                    j += 1;
-                }
-                i += 1;
+                swap_lt_half(left, right, n, &mut i, &mut cmp);
             }
         }
         left
@@ -443,6 +391,43 @@ pub mod slice {
         let len = right.len();
         let ptr = right.as_mut_ptr();
         *right = slice::from_raw_parts_mut(ptr.add(1), len - 1);
+    }
+
+    fn swap_gt_half<T>(
+        left: &mut &mut [T],
+        right: &mut &mut [T],
+        n: usize,
+        i: usize,
+        cmp: &mut impl FnMut(&T, &T) -> Ordering,
+    ) {
+        right.swap(i, 0);
+        let mut j = n - 1;
+        if cmp(&left[j], &right[0]) == Ordering::Greater {
+            mem::swap(&mut left[j], &mut right[0]);
+            while cmp(&left[j], &left[j - 1]) == Ordering::Less {
+                left.swap(j, j - 1);
+                j -= 1;
+            }
+        }
+        unsafe {
+            shift_slice_right(left, right);
+        }
+    }
+
+    fn swap_lt_half<T>(
+        left: &mut [T],
+        right: &mut [T],
+        n: usize,
+        i: &mut usize,
+        cmp: &mut impl FnMut(&T, &T) -> Ordering,
+    ) {
+        mem::swap(&mut left[0], &mut right[*i]);
+        let mut j = 0;
+        while j < n - 1 && cmp(&left[j], &left[j + 1]) != Ordering::Less {
+            left.swap(j, j + 1);
+            j += 1;
+        }
+        *i += 1;
     }
 }
 
