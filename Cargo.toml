@@ -17,10 +17,9 @@ default = ["alloc"]
 alloc = []
 
 [badges]
-travis-ci = { repository = "evenorog/out" }
 maintenance = { status = "actively-developed" }
 
 [dev-dependencies]
 rand = { version = "0.8", features = ["small_rng"]}
 quickcheck = "1"
-quickcheck_macros = "1.0.0"
+quickcheck_macros = "1"

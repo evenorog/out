@@ -1,6 +1,6 @@
 # out
 
-[![Travis](https://travis-ci.com/evenorog/out.svg?branch=master)](https://travis-ci.com/evenorog/out)
+[![Rust](https://github.com/evenorog/out/actions/workflows/rust.yml/badge.svg)](https://github.com/evenorog/out/actions/workflows/rust.yml)
 [![Crates.io](https://img.shields.io/crates/v/out.svg)](https://crates.io/crates/out)
 [![Docs](https://docs.rs/out/badge.svg)](https://docs.rs/out)
 
