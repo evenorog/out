@@ -9,7 +9,6 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["min", "max", "iterator", "slice"]
 categories = ["algorithms", "no-std"]
-exclude = ["/.travis.yml"]
 edition = "2021"
 
 [features]
@@ -17,7 +16,7 @@ default = ["alloc"]
 alloc = []
 
 [badges]
-maintenance = { status = "actively-developed" }
+maintenance = { status = "passively-maintained" }
 
 [dev-dependencies]
 rand = { version = "0.8", features = ["small_rng"]}
