@@ -51,11 +51,11 @@ pub fn max_by<T>(
     n: usize,
     mut cmp: impl FnMut(&T, &T) -> Ordering,
 ) -> Vec<T> {
-    let mut v = Vec::with_capacity(n);
     if n == 0 {
-        return v;
+        return Vec::new();
     }
 
+    let mut v = Vec::with_capacity(n);
     let mut iter = iter.into_iter();
     while v.len() < n {
         let Some(item) = iter.next() else {
@@ -173,15 +173,14 @@ pub fn max_unstable_by<T>(
     n: usize,
     mut cmp: impl FnMut(&T, &T) -> Ordering,
 ) -> Vec<T> {
-    let mut v = Vec::with_capacity(n);
     if n == 0 {
-        return v;
+        return Vec::new();
     }
 
+    let mut v = Vec::with_capacity(n);
     let mut iter = iter.into_iter();
     while v.len() < n {
         let Some(item) = iter.next() else {
-            // If the iterator is less than n we break out of the loop and sort it below.
             break;
         };
         v.push(item);
