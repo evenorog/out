@@ -10,7 +10,7 @@
 //! This library can provide significant performance increase compared to sorting or
 //! converting to a heap when `n` is small compared to the length of the slice or iterator.
 
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 #![doc(html_root_url = "https://docs.rs/out")]
 #![deny(missing_docs)]
 

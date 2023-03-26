@@ -12,7 +12,8 @@ categories = ["algorithms", "no-std"]
 edition = "2021"
 
 [features]
-default = ["alloc"]
+default = ["std"]
+std = ["alloc"]
 alloc = []
 
 [badges]
