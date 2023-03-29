@@ -132,8 +132,8 @@ pub fn min_by_key<T, K: Ord>(
 
 /// Returns the `n` largest items from an iterator.
 ///
-/// This sort is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`max`](fn.max.html).
+/// This function is unstable (i.e. may reorder equal elements)
+/// and typically faster than [`max`].
 ///
 /// # Examples
 /// ```
@@ -146,8 +146,8 @@ pub fn max_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<
 
 /// Returns the `n` smallest items from an iterator.
 ///
-/// This sort is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`min`](fn.min.html).
+/// This function is unstable (i.e. may reorder equal elements)
+/// and typically faster than [`min`].
 ///
 /// # Examples
 /// ```
@@ -160,8 +160,8 @@ pub fn min_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<
 
 /// Returns the `n` largest items from an iterator with a comparator function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`max_by`](fn.max_by.html).
+/// This function is unstable (i.e. may reorder equal elements)
+/// and typically faster than [`max_by`].
 ///
 /// # Examples
 /// ```
@@ -203,8 +203,8 @@ pub fn max_unstable_by<T>(
 
 /// Returns the `n` smallest items from an iterator with a comparator function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`min_by`](fn.min_by.html).
+/// This function is unstable (i.e. may reorder equal elements)
+/// and typically faster than [`min_by`].
 ///
 /// # Examples
 /// ```
@@ -221,8 +221,8 @@ pub fn min_unstable_by<T>(
 
 /// Returns the `n` largest items from an iterator with a key extraction function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`max_by_key`](fn.max_by_key.html).
+/// This function is unstable (i.e. may reorder equal elements)
+/// and typically faster than [`max_by_key`].
 ///
 /// # Examples
 /// ```
@@ -239,8 +239,8 @@ pub fn max_unstable_by_key<T, K: Ord>(
 
 /// Returns the `n` smallest items from an iterator with a key extraction function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`min_by_key`](fn.min_by_key.html).
+/// This function is unstable (i.e. may reorder equal elements)
+/// and typically faster than [`min_by_key`].
 ///
 /// # Examples
 /// ```

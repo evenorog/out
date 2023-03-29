@@ -29,7 +29,7 @@ macro_rules! find_n {
 
 /// Returns the `n` largest items.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -47,7 +47,7 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 
 /// Returns the `n` smallest items.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -65,7 +65,7 @@ pub fn min<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 
 /// Returns the `n` largest items with a comparator function.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -99,7 +99,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 
 /// Returns the `n` smallest items with a comparator function.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -117,7 +117,7 @@ pub fn min_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 
 /// Returns the `n` largest items with a key extraction function.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -135,7 +135,7 @@ pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) 
 
 /// Returns the `n` smallest items with a key extraction function.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -156,7 +156,7 @@ pub fn min_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) 
 /// The key function is called only once per element, but for simple key functions `sort_by_key`
 /// is likely to be faster.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -190,7 +190,7 @@ pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> 
 /// The key function is called only once per element, but for simple key functions `sort_by_key`
 /// is likely to be faster.
 ///
-/// This sort is stable, i.e. it preserves the order of equal elements.
+/// This function is stable, i.e. it preserves the order of equal elements.
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -221,8 +221,8 @@ pub fn min_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> 
 
 /// Returns the `n` largest items.
 ///
-/// This sort is unstable (i.e. may reorder equal elements), in-place
-/// (i.e. does not allocate), and typically faster than [`max`](fn.max.html).
+/// This function is unstable (i.e. may reorder equal elements), in-place
+/// (i.e. does not allocate), and typically faster than [`max`].
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -239,8 +239,8 @@ pub fn max_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 
 /// Returns the `n` smallest items.
 ///
-/// This sort is unstable (i.e. may reorder equal elements), in-place
-/// (i.e. does not allocate), and typically faster than [`min`](fn.min.html).
+/// This function is unstable (i.e. may reorder equal elements), in-place
+/// (i.e. does not allocate), and typically faster than [`min`].
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -257,8 +257,8 @@ pub fn min_unstable<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 
 /// Returns the `n` largest items with a comparator function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements), in-place
-/// (i.e. does not allocate), and typically faster than [`max_by`](fn.max_by.html).
+/// This function is unstable (i.e. may reorder equal elements), in-place
+/// (i.e. does not allocate), and typically faster than [`max_by`].
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -295,8 +295,8 @@ pub fn max_unstable_by<T>(
 
 /// Returns the `n` smallest items with a comparator function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements), in-place
-/// (i.e. does not allocate), and typically faster than [`min_by`](fn.min_by.html).
+/// This function is unstable (i.e. may reorder equal elements), in-place
+/// (i.e. does not allocate), and typically faster than [`min_by`].
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -317,8 +317,8 @@ pub fn min_unstable_by<T>(
 
 /// Returns the `n` largest items with a key extraction function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements), in-place
-/// (i.e. does not allocate), and typically faster than [`max_by_key`](fn.max_by_key.html).
+/// This function is unstable (i.e. may reorder equal elements), in-place
+/// (i.e. does not allocate), and typically faster than [`max_by_key`].
 ///
 /// # Panics
 /// Panics if `n > len`.
@@ -339,8 +339,8 @@ pub fn max_unstable_by_key<T, K: Ord>(
 
 /// Returns the `n` smallest items with a key extraction function.
 ///
-/// This sort is unstable (i.e. may reorder equal elements), in-place
-/// (i.e. does not allocate), and typically faster than [`min_by_key`](fn.min_by_key.html).
+/// This function is unstable (i.e. may reorder equal elements), in-place
+/// (i.e. does not allocate), and typically faster than [`min_by_key`].
 ///
 /// # Panics
 /// Panics if `n > len`.
