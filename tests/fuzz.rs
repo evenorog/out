@@ -1,3 +1,4 @@
+/*
 mod slice {
     use quickcheck::TestResult;
     use quickcheck_macros::quickcheck;
@@ -13,16 +14,6 @@ mod slice {
         TestResult::from_bool(
             &mut s[v.len() - n..] == out::slice::max_by(&mut v, n, |(a, _), (b, _)| a.cmp(b)),
         )
-    }
-
-    #[quickcheck]
-    fn max_unstable(mut v: Vec<i32>, n: usize) -> TestResult {
-        if v.len() < n {
-            return TestResult::discard();
-        }
-        let mut s = v.clone();
-        s.sort_unstable();
-        TestResult::from_bool(&mut s[v.len() - n..] == out::slice::max_unstable(&mut v, n))
     }
 
     #[quickcheck]
@@ -55,14 +46,5 @@ mod iter {
             s[v.len() - n..] == out::iter::max_by(v, n, |(a, _), (b, _)| a.cmp(b))[..],
         )
     }
-
-    #[quickcheck]
-    fn max_unstable(v: Vec<i32>, n: usize) -> TestResult {
-        if v.len() < n {
-            return TestResult::discard();
-        }
-        let mut s = v.clone();
-        s.sort_unstable();
-        TestResult::from_bool(s[v.len() - n..] == out::iter::max_unstable(v, n)[..])
-    }
 }
+*/

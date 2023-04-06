@@ -21,3 +21,46 @@ pub mod slice;
 
 #[cfg(feature = "alloc")]
 pub mod iter;
+
+use core::cmp::Ordering;
+
+fn make_min_heap<T, F>(v: &mut [T], f: &mut F)
+where
+    F: FnMut(&T, &T) -> Ordering,
+{
+    let len = v.len();
+    if len < 2 {
+        return;
+    }
+    let mut i = len / 2 - 1;
+    while i > 0 {
+        sift_down(v, f, i, len);
+        i -= 1;
+    }
+    sift_down(v, f, 0, len);
+}
+
+fn sift_down<T, F>(v: &mut [T], f: &mut F, mut i: usize, end: usize)
+where
+    F: FnMut(&T, &T) -> Ordering,
+{
+    loop {
+        let left = i * 2 + 1;
+        if left >= end {
+            break;
+        }
+        let right = left + 1;
+        let child = if right < end && f(&v[right], &v[left]).is_lt() {
+            right
+        } else {
+            left
+        };
+
+        if f(&v[child], &v[i]).is_ge() {
+            break;
+        }
+
+        v.swap(child, i);
+        i = child;
+    }
+}

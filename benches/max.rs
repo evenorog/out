@@ -27,15 +27,6 @@ mod slice {
     }
 
     #[bench]
-    fn max_unstable(b: &mut test::Bencher) {
-        let v = create_random_vec();
-        b.iter(|| {
-            let mut v = v.clone();
-            test::black_box(out::slice::max_unstable(&mut v, N));
-        });
-    }
-
-    #[bench]
     fn max_by_cached_key(b: &mut test::Bencher) {
         let v = create_random_vec();
         b.iter(|| {
@@ -54,15 +45,6 @@ mod iter {
         b.iter(|| {
             let v = v.clone();
             test::black_box(out::iter::max(v, N));
-        });
-    }
-
-    #[bench]
-    fn max_unstable(b: &mut test::Bencher) {
-        let v = create_random_vec();
-        b.iter(|| {
-            let v = v.clone();
-            test::black_box(out::iter::max_unstable(v, N));
         });
     }
 }
