@@ -67,10 +67,10 @@ pub fn max_by<T>(
     v.sort_by(&mut cmp);
 
     for item in iter {
-        if cmp(&item, &v[0]) != Ordering::Less {
+        if cmp(&item, &v[0]).is_ge() {
             v[0] = item;
             let mut i = 0;
-            while i < n - 1 && cmp(&v[i], &v[i + 1]) != Ordering::Less {
+            while i < n - 1 && cmp(&v[i], &v[i + 1]).is_ge() {
                 v.swap(i, i + 1);
                 i += 1;
             }
@@ -189,10 +189,10 @@ pub fn max_unstable_by<T>(
     v.sort_unstable_by(&mut cmp);
 
     for item in iter {
-        if cmp(&item, &v[0]) == Ordering::Greater {
+        if cmp(&item, &v[0]).is_gt() {
             v[0] = item;
             let mut i = 0;
-            while i < n - 1 && cmp(&v[i], &v[i + 1]) == Ordering::Greater {
+            while i < n - 1 && cmp(&v[i], &v[i + 1]).is_gt() {
                 v.swap(i, i + 1);
                 i += 1;
             }

@@ -86,9 +86,9 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
     left.sort_by(&mut cmp);
     let mut i = 0;
     while i < right.len() {
-        if cmp(&right[i], &left[0]) == Ordering::Less {
+        if cmp(&right[i], &left[0]).is_lt() {
             i += 1;
-        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
+        } else if cmp(&right[i], &left[n / 2]).is_gt() {
             swap_gt_half(&mut left, &mut right, n, i, &mut cmp);
         } else {
             swap_lt_half(left, right, n, &mut i, &mut cmp);
@@ -282,9 +282,9 @@ pub fn max_unstable_by<T>(
     left.sort_unstable_by(&mut cmp);
     let mut i = 0;
     while i < right.len() {
-        if cmp(&left[0], &right[i]) == Ordering::Greater {
+        if cmp(&left[0], &right[i]).is_gt() {
             i += 1;
-        } else if cmp(&right[i], &left[n / 2]) == Ordering::Greater {
+        } else if cmp(&right[i], &left[n / 2]).is_gt() {
             swap_gt_half(&mut left, &mut right, n, i, &mut cmp);
         } else {
             swap_lt_half(left, right, n, &mut i, &mut cmp);
@@ -385,9 +385,9 @@ fn swap_gt_half<T>(
 ) {
     right.swap(i, 0);
     let mut j = n - 1;
-    if cmp(&left[j], &right[0]) == Ordering::Greater {
+    if cmp(&left[j], &right[0]).is_gt() {
         mem::swap(&mut left[j], &mut right[0]);
-        while cmp(&left[j], &left[j - 1]) == Ordering::Less {
+        while cmp(&left[j], &left[j - 1]).is_lt() {
             left.swap(j, j - 1);
             j -= 1;
         }
@@ -406,7 +406,7 @@ fn swap_lt_half<T>(
 ) {
     mem::swap(&mut left[0], &mut right[*i]);
     let mut j = 0;
-    while j < n - 1 && cmp(&left[j], &left[j + 1]) != Ordering::Less {
+    while j < n - 1 && cmp(&left[j], &left[j + 1]).is_ge() {
         left.swap(j, j + 1);
         j += 1;
     }
