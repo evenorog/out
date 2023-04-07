@@ -28,19 +28,12 @@ fn make_min_heap<T, F>(v: &mut [T], f: &mut F)
 where
     F: FnMut(&T, &T) -> Ordering,
 {
-    let len = v.len();
-    if len < 2 {
-        return;
+    for i in (0..v.len() / 2).rev() {
+        unsafe { sift_down(v, f, i, v.len()) };
     }
-    let mut i = len / 2 - 1;
-    while i > 0 {
-        sift_down(v, f, i, len);
-        i -= 1;
-    }
-    sift_down(v, f, 0, len);
 }
 
-fn sift_down<T, F>(v: &mut [T], f: &mut F, mut i: usize, end: usize)
+unsafe fn sift_down<T, F>(v: &mut [T], f: &mut F, mut i: usize, end: usize)
 where
     F: FnMut(&T, &T) -> Ordering,
 {
@@ -50,13 +43,13 @@ where
             break;
         }
         let right = left + 1;
-        let child = if right < end && f(&v[right], &v[left]).is_lt() {
+        let child = if right < end && f(v.get_unchecked(right), v.get_unchecked(left)).is_lt() {
             right
         } else {
             left
         };
 
-        if f(&v[child], &v[i]).is_ge() {
+        if f(v.get_unchecked(child), v.get_unchecked(i)).is_ge() {
             break;
         }
 

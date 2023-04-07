@@ -81,7 +81,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         let root = &mut left[0];
         if cmp(root, item).is_lt() {
             mem::swap(root, item);
-            crate::sift_down(left, &mut cmp, 0, n);
+            unsafe { crate::sift_down(left, &mut cmp, 0, n) };
         }
         i += 1;
     }

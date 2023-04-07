@@ -119,3 +119,17 @@ mod std {
         });
     }
 }
+
+mod itertools {
+    use crate::{rng_vec, N};
+    use itertools::Itertools;
+
+    #[bench]
+    fn k_smallest(b: &mut test::Bencher) {
+        let v = rng_vec();
+        b.iter(|| {
+            let k_smallest = v.clone();
+            test::black_box(k_smallest.into_iter().k_smallest(N));
+        });
+    }
+}

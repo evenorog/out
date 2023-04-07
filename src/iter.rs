@@ -70,7 +70,7 @@ pub fn max_by<T>(
         let root = &mut v[0];
         if cmp(root, &item).is_lt() {
             *root = item;
-            crate::sift_down(&mut v, &mut cmp, 0, n);
+            unsafe { crate::sift_down(&mut v, &mut cmp, 0, n) };
         }
     }
     v
