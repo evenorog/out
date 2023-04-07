@@ -3,9 +3,11 @@
 //! ```
 //! let mut v = [-5, 4, 1, -3, 2];
 //! let max = out::slice::max(&mut v, 3);
-//! assert_eq!(max, [1, 2, 4]);
+//! assert_eq!(max, [1, 4, 2]);
 //! assert_eq!(out::slice::min(max, 2), [2, 1]);
 //! ```
+//!
+//! The order of the returned items is not guaranteed to be sorted.
 //!
 //! This library can provide significant performance increase compared to sorting or
 //! converting to a heap when `n` is small compared to the length of the slice or iterator.
@@ -23,20 +25,23 @@ pub mod slice;
 pub mod iter;
 
 use core::cmp::Ordering;
+use std::ptr;
 
-fn make_min_heap<T, F>(v: &mut [T], f: &mut F)
-where
-    F: FnMut(&T, &T) -> Ordering,
-{
-    for i in (0..v.len() / 2).rev() {
-        unsafe { sift_down(v, f, i, v.len()) };
+fn make_min_heap<T>(v: &mut [T], f: &mut impl FnMut(&T, &T) -> Ordering) {
+    let len = v.len();
+    let mut i = len / 2;
+    while i > 0 {
+        i -= 1;
+        unsafe { sift_down(v, i, len, f) };
     }
 }
 
-unsafe fn sift_down<T, F>(v: &mut [T], f: &mut F, mut i: usize, end: usize)
-where
-    F: FnMut(&T, &T) -> Ordering,
-{
+unsafe fn sift_down<T>(
+    v: &mut [T],
+    mut i: usize,
+    end: usize,
+    f: &mut impl FnMut(&T, &T) -> Ordering,
+) {
     loop {
         let left = i * 2 + 1;
         if left >= end {
@@ -53,7 +58,8 @@ where
             break;
         }
 
-        v.swap(child, i);
+        let p = v.as_mut_ptr();
+        ptr::swap(p.add(child), p.add(i));
         i = child;
     }
 }

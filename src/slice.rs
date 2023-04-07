@@ -4,8 +4,8 @@
 //! ```
 //! let mut v = [-5, 4, 1, -3, 2];
 //! let max = out::slice::max(&mut v, 3);
-//! assert_eq!(max, [1, 2, 4]);
-//! assert_eq!(v, [-3, 1, 2, 4, -5]);
+//! assert_eq!(max, [1, 4, 2]);
+//! assert_eq!(v, [1, 4, 2, -5, -3]);
 //! ```
 
 use core::{cmp::Ordering, mem};
@@ -36,7 +36,7 @@ macro_rules! find_n {
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let max = out::slice::max(&mut v, 3);
-/// assert_eq!(max, [1, 2, 4]);
+/// assert_eq!(max, [1, 4, 2]);
 /// ```
 pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
     max_by(v, n, T::cmp)
@@ -51,7 +51,7 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let min = out::slice::min(&mut v, 3);
-/// assert_eq!(min, [1, -3, -5]);
+/// assert_eq!(min, [1, -5, -3]);
 /// ```
 pub fn min<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
     min_by(v, n, T::cmp)
@@ -66,7 +66,7 @@ pub fn min<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let min = out::slice::max_by(&mut v, 3, |a, b| b.cmp(a));
-/// assert_eq!(min, [1, -3, -5]);
+/// assert_eq!(min, [1, -5, -3]);
 /// ```
 pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     if n == 0 {
@@ -75,16 +75,14 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 
     let (left, right) = v.split_at_mut(n);
     crate::make_min_heap(left, &mut cmp);
-    let mut i = 0;
-    while i < right.len() {
-        let item = &mut right[i];
-        let root = &mut left[0];
-        if cmp(root, item).is_lt() {
-            mem::swap(root, item);
-            unsafe { crate::sift_down(left, &mut cmp, 0, n) };
+    for i in right {
+        let min = &mut left[0];
+        if cmp(i, min).is_gt() {
+            mem::swap(min, i);
+            unsafe { crate::sift_down(left, 0, n, &mut cmp) };
         }
-        i += 1;
     }
+
     left
 }
 
@@ -97,7 +95,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let max = out::slice::min_by(&mut v, 3, |a, b| b.cmp(a));
-/// assert_eq!(max, [1, 2, 4]);
+/// assert_eq!(max, [1, 4, 2]);
 /// ```
 pub fn min_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     max_by(v, n, |a, b| cmp(b, a))

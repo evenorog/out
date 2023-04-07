@@ -10,8 +10,8 @@ fn slice_max() {
 fn slice_min() {
     let mut v = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let min = out::slice::min(&mut v, 5);
-    min.sort_by(|a, b| b.cmp(a));
-    assert_eq!(min, [4, 3, 2, 1, 0]);
+    min.sort();
+    assert_eq!(min, [0, 1, 2, 3, 4]);
 }
 
 #[test]
@@ -26,6 +26,6 @@ fn iter_max() {
 fn iter_min() {
     let v = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let mut min = out::iter::min(v, 5);
-    min.sort_by(|a, b| b.cmp(a));
-    assert_eq!(min, [4, 3, 2, 1, 0]);
+    min.sort();
+    assert_eq!(min, [0, 1, 2, 3, 4]);
 }

@@ -9,9 +9,11 @@ Provides fast min and max functionality for collections.
 ```rust
 let mut v = [-5, 4, 1, -3, 2];
 let max = out::slice::max(&mut v, 3);
-assert_eq!(max, [1, 2, 4]);
+assert_eq!(max, [1, 4, 2]);
 assert_eq!(out::slice::min(max, 2), [2, 1]);
 ```
+
+The order of the returned items is not guaranteed to be sorted.
 
 This library can provide significant performance increase compared to sorting or
 converting to a heap when `n` is small compared to the length of the slice or iterator.
@@ -19,34 +21,6 @@ converting to a heap when `n` is small compared to the length of the slice or it
 ## Benchmarks
 
 *n = 100, len = 1_000_000:*
-
-```
-openSUSE Tumbleweed, i7-5820K @ 3.30GHz, and 16GiB RAM:
-
-test iter::max                ... bench:     918,253 ns/iter (+/- 99,863)
-test iter::max_unstable       ... bench:     916,908 ns/iter (+/- 58,050)
-test slice::max               ... bench:     698,643 ns/iter (+/- 46,373)
-test slice::max_by_cached_key ... bench:   1,516,099 ns/iter (+/- 37,853)
-test slice::max_unstable      ... bench:     655,286 ns/iter (+/- 25,017)
-test std::binary_heap         ... bench:   6,592,801 ns/iter (+/- 780,590)
-test std::sort                ... bench:  63,192,028 ns/iter (+/- 2,338,506)
-test std::sort_by_cached_key  ... bench:  66,058,834 ns/iter (+/- 5,447,387)
-test std::sort_unstable       ... bench:  30,953,024 ns/iter (+/- 1,141,696)
-```
-
-```
-Windows 10 (msvc), i7-5820K @ 3.30GHz, and 16GiB RAM:
-
-test iter::max                ... bench:   2,650,615 ns/iter (+/- 1,427,458)
-test iter::max_unstable       ... bench:   2,604,860 ns/iter (+/- 1,001,639)
-test slice::max               ... bench:   2,353,487 ns/iter (+/- 1,140,791)
-test slice::max_by_cached_key ... bench:   3,317,930 ns/iter (+/- 1,115,283)
-test slice::max_unstable      ... bench:   2,221,975 ns/iter (+/- 1,232,170)
-test std::binary_heap         ... bench:   8,666,095 ns/iter (+/- 3,790,987)
-test std::sort                ... bench:  73,953,630 ns/iter (+/- 23,036,689)
-test std::sort_by_cached_key  ... bench:  79,681,540 ns/iter (+/- 24,554,555)
-test std::sort_unstable       ... bench:  35,327,180 ns/iter (+/- 8,306,700)
-```
 
 ```
 openSUSE Tumbleweed, i7-12700KF @ 3.61GHz, and 32GiB RAM:
@@ -60,20 +34,6 @@ test std::binary_heap         ... bench:   3,520,525 ns/iter (+/- 152,789)
 test std::sort                ... bench:  47,232,681 ns/iter (+/- 2,028,844)
 test std::sort_by_cached_key  ... bench:  36,308,204 ns/iter (+/- 1,509,123)
 test std::sort_unstable       ... bench:  18,652,609 ns/iter (+/- 935,364)
-```
-
-```
-Windows 11 (msvc), i7-12700KF @ 3.61GHz, and 32GiB RAM:
-
-test iter::max                ... bench:   1,054,250 ns/iter (+/- 90,022)
-test iter::max_unstable       ... bench:   1,054,852 ns/iter (+/- 103,904)
-test slice::max               ... bench:     925,992 ns/iter (+/- 91,759)
-test slice::max_by_cached_key ... bench:   1,799,090 ns/iter (+/- 112,800)
-test slice::max_unstable      ... bench:     923,361 ns/iter (+/- 97,847)
-test std::binary_heap         ... bench:   3,433,625 ns/iter (+/- 177,130)
-test std::sort                ... bench:  49,211,390 ns/iter (+/- 959,550)
-test std::sort_by_cached_key  ... bench:  38,133,930 ns/iter (+/- 1,525,721)
-test std::sort_unstable       ... bench:  20,959,570 ns/iter (+/- 567,623)
 ```
 
 ### License
