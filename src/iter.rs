@@ -57,7 +57,7 @@ pub fn max_by<T>(
         let min = &mut left[0];
         if cmp(&i, min).is_gt() {
             *min = i;
-            unsafe { crate::sift_down(&mut left, 0, n, &mut cmp) };
+            crate::sift_down(&mut left, 0, &mut cmp);
         }
     }
     left

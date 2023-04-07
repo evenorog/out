@@ -25,41 +25,35 @@ pub mod slice;
 pub mod iter;
 
 use core::cmp::Ordering;
-use std::ptr;
 
 fn make_min_heap<T>(v: &mut [T], f: &mut impl FnMut(&T, &T) -> Ordering) {
-    let len = v.len();
-    let mut i = len / 2;
+    let mut i = v.len() / 2;
     while i > 0 {
         i -= 1;
-        unsafe { sift_down(v, i, len, f) };
+        sift_down(v, i, f);
     }
 }
 
-unsafe fn sift_down<T>(
-    v: &mut [T],
-    mut i: usize,
-    end: usize,
-    f: &mut impl FnMut(&T, &T) -> Ordering,
-) {
+fn sift_down<T>(v: &mut [T], mut i: usize, f: &mut impl FnMut(&T, &T) -> Ordering) {
+    let len = v.len();
     loop {
         let left = i * 2 + 1;
-        if left >= end {
+        if left >= len {
             break;
         }
+
         let right = left + 1;
-        let child = if right < end && f(v.get_unchecked(right), v.get_unchecked(left)).is_lt() {
+        let child = if right < len && f(&v[right], &v[left]).is_lt() {
             right
         } else {
             left
         };
 
-        if f(v.get_unchecked(child), v.get_unchecked(i)).is_ge() {
+        if f(&v[child], &v[i]).is_ge() {
             break;
         }
 
-        let p = v.as_mut_ptr();
-        ptr::swap(p.add(child), p.add(i));
+        v.swap(i, child);
         i = child;
     }
 }

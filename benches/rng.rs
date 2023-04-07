@@ -4,7 +4,7 @@ extern crate test;
 
 use rand::prelude::*;
 
-const N: usize = 100;
+const N: usize = 1000;
 const LEN: usize = 1_000_000;
 
 fn rng_vec() -> Vec<i32> {
