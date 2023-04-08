@@ -59,3 +59,14 @@ fn sift_down<T>(v: &mut [T], mut i: usize, f: &mut impl FnMut(&T, &T) -> Orderin
         i = child;
     }
 }
+
+/// Sorts the min binary heap using the comparator function provided.
+#[allow(dead_code)]
+fn sort_min_heap<T>(v: &mut [T], f: &mut impl FnMut(&T, &T) -> Ordering) {
+    let mut i = v.len();
+    while i > 1 {
+        i -= 1;
+        v.swap(0, i);
+        sift_down(&mut v[..i], 0, f);
+    }
+}

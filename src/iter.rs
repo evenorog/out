@@ -60,6 +60,8 @@ pub fn max_by<T>(
             crate::sift_down(&mut left, 0, &mut cmp);
         }
     }
+
+    // crate::sort_min_heap(&mut left, &mut cmp);
     left
 }
 
@@ -97,8 +99,8 @@ pub fn max_by_key<T, K: Ord>(
 ///
 /// # Examples
 /// ```
-/// let max = out::iter::min_by_key(-10_i32..10, 3, |a| a.abs());
-/// assert_eq!(max, [1, -1, 0]);
+/// let min = out::iter::min_by_key(-10_i32..10, 3, |a| a.abs());
+/// assert_eq!(min, [1, -1, 0]);
 /// ```
 pub fn min_by_key<T, K: Ord>(
     iter: impl IntoIterator<Item = T>,

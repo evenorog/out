@@ -87,6 +87,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         }
     }
 
+    // crate::sort_min_heap(left, &mut cmp);
     left
 }
 
