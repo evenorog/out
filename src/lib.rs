@@ -26,6 +26,7 @@ pub mod iter;
 
 use core::cmp::Ordering;
 
+/// Creates a min binary heap from the given slice using the comparator function provided.
 fn make_min_heap<T>(v: &mut [T], f: &mut impl FnMut(&T, &T) -> Ordering) {
     let mut i = v.len() / 2;
     while i > 0 {
@@ -34,6 +35,7 @@ fn make_min_heap<T>(v: &mut [T], f: &mut impl FnMut(&T, &T) -> Ordering) {
     }
 }
 
+/// Sifts down the element at index `i` using the comparator function provided.
 fn sift_down<T>(v: &mut [T], mut i: usize, f: &mut impl FnMut(&T, &T) -> Ordering) {
     let len = v.len();
     loop {

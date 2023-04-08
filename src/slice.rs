@@ -75,6 +75,10 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 
     let (left, right) = v.split_at_mut(n);
     crate::make_min_heap(left, &mut cmp);
+    // Since the smallest element is the root of the heap now
+    // we will replace it with the next element from the right
+    // if it is larger and then SIFT it down to the correct
+    // location in the tree.
     for i in right {
         let min = &mut left[0];
         if cmp(i, min).is_gt() {

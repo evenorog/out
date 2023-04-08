@@ -52,7 +52,7 @@ pub fn max_by<T>(
     let mut right = iter.into_iter();
     let mut left = right.by_ref().take(n).collect::<Vec<_>>();
     crate::make_min_heap(&mut left, &mut cmp);
-
+    // Same as `slice::max_by`.
     for i in right {
         let min = &mut left[0];
         if cmp(&i, min).is_gt() {
