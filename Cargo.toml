@@ -23,4 +23,3 @@ maintenance = { status = "passively-maintained" }
 rand = { version = "0.8", features = ["small_rng"]}
 quickcheck = "1"
 quickcheck_macros = "1"
-itertools = "0.10"

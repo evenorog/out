@@ -5,29 +5,27 @@ mod slice {
     #[quickcheck]
     #[cfg(feature = "alloc")]
     fn max(mut v: Vec<i32>, n: usize) -> TestResult {
-        let len = v.len();
-        if len < n {
+        if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort();
+        s.reverse();
         let out = out::slice::max(&mut v, n);
-        out.sort();
-        TestResult::from_bool(&mut s[len - n..] == out)
+        TestResult::from_bool(&mut s[..n] == out)
     }
 
     #[quickcheck]
     #[cfg(feature = "alloc")]
     fn max_by_cached_key(mut v: Vec<i32>, n: usize) -> TestResult {
-        let len = v.len();
-        if len < n {
+        if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort_by_cached_key(|&a| a);
+        s.reverse();
         let out = out::slice::max_by_cached_key(&mut v, n, |&a| a);
-        out.sort();
-        TestResult::from_bool(&mut s[len - n..] == out)
+        TestResult::from_bool(&mut s[..n] == out)
     }
 }
 
@@ -38,14 +36,13 @@ mod iter {
 
     #[quickcheck]
     fn max(v: Vec<i32>, n: usize) -> TestResult {
-        let len = v.len();
-        if len < n {
+        if v.len() < n {
             return TestResult::discard();
         }
         let mut s = v.clone();
         s.sort();
-        let mut out = out::iter::max(v, n);
-        out.sort();
-        TestResult::from_bool(s[len - n..] == out)
+        s.reverse();
+        let out = out::iter::max(v, n);
+        TestResult::from_bool(s[..n] == out)
     }
 }

@@ -3,11 +3,9 @@
 //! ```
 //! let mut v = [-5, 4, 1, -3, 2];
 //! let max = out::slice::max(&mut v, 3);
-//! assert_eq!(max, [1, 4, 2]);
-//! assert_eq!(out::slice::min(max, 2), [2, 1]);
+//! assert_eq!(max, [4, 2, 1]);
+//! assert_eq!(out::slice::min(max, 2), [1, 2]);
 //! ```
-//!
-//! The order of the returned items is not guaranteed to be sorted.
 //!
 //! This library can provide significant performance increase compared to sorting or
 //! converting to a heap when `n` is small compared to the length of the slice or iterator.
@@ -61,7 +59,6 @@ fn sift_down<T>(v: &mut [T], mut i: usize, f: &mut impl FnMut(&T, &T) -> Orderin
 }
 
 /// Sorts the min binary heap using the comparator function provided.
-#[allow(dead_code)]
 fn sort_min_heap<T>(v: &mut [T], f: &mut impl FnMut(&T, &T) -> Ordering) {
     let mut i = v.len();
     while i > 1 {

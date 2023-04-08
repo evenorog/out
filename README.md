@@ -9,32 +9,12 @@ Provides fast min and max functionality for collections.
 ```rust
 let mut v = [-5, 4, 1, -3, 2];
 let max = out::slice::max(&mut v, 3);
-assert_eq!(max, [1, 4, 2]);
-assert_eq!(out::slice::min(max, 2), [2, 1]);
+assert_eq!(max, [4, 2, 1]);
+assert_eq!(out::slice::min(max, 2), [1, 2]);
 ```
-
-The order of the returned items is not guaranteed to be sorted.
 
 This library can provide significant performance increase compared to sorting or
 converting to a heap when `n` is small compared to the length of the slice or iterator.
-
-## Benchmarks
-
-*n = 100, len = 1_000_000:*
-
-```
-openSUSE Tumbleweed, i7-12700KF @ 3.61GHz, and 32GiB RAM:
-
-test iter::max                ... bench:     623,477 ns/iter (+/- 49,526)
-test iter::max_unstable       ... bench:     629,370 ns/iter (+/- 47,640)
-test slice::max               ... bench:     490,442 ns/iter (+/- 31,446)
-test slice::max_by_cached_key ... bench:   1,346,982 ns/iter (+/- 81,270)
-test slice::max_unstable      ... bench:     487,957 ns/iter (+/- 37,561)
-test std::binary_heap         ... bench:   3,520,525 ns/iter (+/- 152,789)
-test std::sort                ... bench:  47,232,681 ns/iter (+/- 2,028,844)
-test std::sort_by_cached_key  ... bench:  36,308,204 ns/iter (+/- 1,509,123)
-test std::sort_unstable       ... bench:  18,652,609 ns/iter (+/- 935,364)
-```
 
 ### License
 

@@ -3,9 +3,9 @@
 //! # Examples
 //! ```
 //! let max = out::iter::max(-10..10, 3);
-//! assert_eq!(max, [7, 9, 8]);
+//! assert_eq!(max, [9, 8, 7]);
 //! let min = out::iter::min(max, 10);
-//! assert_eq!(min, [9, 7, 8]);
+//! assert_eq!(min, [7, 8, 9]);
 //! ```
 
 use alloc::vec::Vec;
@@ -16,7 +16,7 @@ use core::cmp::Ordering;
 /// # Examples
 /// ```
 /// let max = out::iter::max(-10..10, 3);
-/// assert_eq!(max, [7, 9, 8]);
+/// assert_eq!(max, [9, 8, 7]);
 /// ```
 pub fn max<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
     max_by(iter, n, T::cmp)
@@ -27,7 +27,7 @@ pub fn max<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
 /// # Examples
 /// ```
 /// let min = out::iter::min(-10..10, 3);
-/// assert_eq!(min, [-8, -9, -10]);
+/// assert_eq!(min, [-10, -9, -8]);
 /// ```
 pub fn min<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
     min_by(iter, n, T::cmp)
@@ -38,7 +38,7 @@ pub fn min<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
 /// # Examples
 /// ```
 /// let min = out::iter::max_by(-10_i32..10, 3, |a, b| b.cmp(a));
-/// assert_eq!(min, [-8, -9, -10]);
+/// assert_eq!(min, [-10, -9, -8]);
 /// ```
 pub fn max_by<T>(
     iter: impl IntoIterator<Item = T>,
@@ -61,7 +61,7 @@ pub fn max_by<T>(
         }
     }
 
-    // crate::sort_min_heap(&mut left, &mut cmp);
+    crate::sort_min_heap(&mut left, &mut cmp);
     left
 }
 
@@ -70,7 +70,7 @@ pub fn max_by<T>(
 /// # Examples
 /// ```
 /// let max = out::iter::min_by(-10_i32..10, 3, |a, b| b.cmp(a));
-/// assert_eq!(max, [7, 9, 8]);
+/// assert_eq!(max, [9, 8, 7]);
 /// ```
 pub fn min_by<T>(
     iter: impl IntoIterator<Item = T>,
@@ -85,7 +85,7 @@ pub fn min_by<T>(
 /// # Examples
 /// ```
 /// let max = out::iter::max_by_key(-10_i32..10, 3, |a| a.abs());
-/// assert_eq!(max, [9, -9, -10]);
+/// assert_eq!(max, [-10, -9, 9]);
 /// ```
 pub fn max_by_key<T, K: Ord>(
     iter: impl IntoIterator<Item = T>,
@@ -100,7 +100,7 @@ pub fn max_by_key<T, K: Ord>(
 /// # Examples
 /// ```
 /// let min = out::iter::min_by_key(-10_i32..10, 3, |a| a.abs());
-/// assert_eq!(min, [1, -1, 0]);
+/// assert_eq!(min, [0, -1, 1]);
 /// ```
 pub fn min_by_key<T, K: Ord>(
     iter: impl IntoIterator<Item = T>,

@@ -4,8 +4,8 @@
 //! ```
 //! let mut v = [-5, 4, 1, -3, 2];
 //! let max = out::slice::max(&mut v, 3);
-//! assert_eq!(max, [1, 4, 2]);
-//! assert_eq!(v, [1, 4, 2, -5, -3]);
+//! assert_eq!(max, [4, 2, 1]);
+//! assert_eq!(v, [4, 2, 1, -5, -3]);
 //! ```
 
 use core::{cmp::Ordering, mem};
@@ -36,7 +36,7 @@ macro_rules! find_n {
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let max = out::slice::max(&mut v, 3);
-/// assert_eq!(max, [1, 4, 2]);
+/// assert_eq!(max, [4, 2, 1]);
 /// ```
 pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
     max_by(v, n, T::cmp)
@@ -51,7 +51,7 @@ pub fn max<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let min = out::slice::min(&mut v, 3);
-/// assert_eq!(min, [1, -5, -3]);
+/// assert_eq!(min, [-5, -3, 1]);
 /// ```
 pub fn min<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
     min_by(v, n, T::cmp)
@@ -66,7 +66,7 @@ pub fn min<T: Ord>(v: &mut [T], n: usize) -> &mut [T] {
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let min = out::slice::max_by(&mut v, 3, |a, b| b.cmp(a));
-/// assert_eq!(min, [1, -5, -3]);
+/// assert_eq!(min, [-5, -3, 1]);
 /// ```
 pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     if n == 0 {
@@ -87,7 +87,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         }
     }
 
-    // crate::sort_min_heap(left, &mut cmp);
+    crate::sort_min_heap(left, &mut cmp);
     left
 }
 
@@ -100,7 +100,7 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 /// ```
 /// let mut v = [-5, 4, 1, -3, 2];
 /// let max = out::slice::min_by(&mut v, 3, |a, b| b.cmp(a));
-/// assert_eq!(max, [1, 4, 2]);
+/// assert_eq!(max, [4, 2, 1]);
 /// ```
 pub fn min_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering) -> &mut [T] {
     max_by(v, n, |a, b| cmp(b, a))
@@ -115,7 +115,7 @@ pub fn min_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
 /// ```
 /// let mut v = [-5_i32, 4, 1, -3, 2];
 /// let max = out::slice::max_by_key(&mut v, 3, |a| a.abs());
-/// assert_eq!(max, [-3, 4, -5]);
+/// assert_eq!(max, [-5, 4, -3]);
 /// ```
 pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
     max_by(v, n, |a, b| f(a).cmp(&f(b)))
@@ -130,7 +130,7 @@ pub fn max_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) 
 /// ```
 /// let mut v = [-5_i32, 4, 1, -3, 2];
 /// let min = out::slice::min_by_key(&mut v, 3, |a| a.abs());
-/// assert_eq!(min, [-3, 2, 1]);
+/// assert_eq!(min, [1, 2, -3]);
 /// ```
 pub fn min_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) -> &mut [T] {
     min_by(v, n, |a, b| f(a).cmp(&f(b)))
@@ -148,7 +148,7 @@ pub fn min_by_key<T, K: Ord>(v: &mut [T], n: usize, mut f: impl FnMut(&T) -> K) 
 /// ```
 /// let mut v = [-5_i32, 4, 1, -3, 2];
 /// let max = out::slice::max_by_cached_key(&mut v, 3, |a| a.abs());
-/// assert_eq!(max, [-3, 4, -5]);
+/// assert_eq!(max, [-5, 4, -3]);
 /// ```
 #[cfg(feature = "alloc")]
 pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
@@ -182,7 +182,7 @@ pub fn max_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> 
 /// ```
 /// let mut v = [-5_i32, 4, 1, -3, 2];
 /// let min = out::slice::min_by_cached_key(&mut v, 3, |a| a.abs());
-/// assert_eq!(min, [-3, 2, 1]);
+/// assert_eq!(min, [1, 2, -3]);
 /// ```
 #[cfg(feature = "alloc")]
 pub fn min_by_cached_key<T, K: Ord>(v: &mut [T], n: usize, f: impl FnMut(&T) -> K) -> &mut [T] {
