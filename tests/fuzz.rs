@@ -3,7 +3,6 @@ mod slice {
     use quickcheck_macros::quickcheck;
 
     #[quickcheck]
-    #[cfg(feature = "alloc")]
     fn max(mut v: Vec<i32>, n: usize) -> TestResult {
         if v.len() < n {
             return TestResult::discard();

@@ -36,6 +36,7 @@ mod slice {
     }
 
     #[bench]
+    #[cfg(feature = "alloc")]
     fn max_by_cached_key(b: &mut test::Bencher) {
         let v = rng_vec();
         b.iter(|| {
@@ -45,6 +46,7 @@ mod slice {
     }
 
     #[bench]
+    #[cfg(feature = "alloc")]
     fn min_by_cached_key(b: &mut test::Bencher) {
         let v = rng_vec();
         b.iter(|| {
@@ -54,6 +56,7 @@ mod slice {
     }
 }
 
+#[cfg(feature = "alloc")]
 mod iter {
     use crate::{rng_vec, N};
 

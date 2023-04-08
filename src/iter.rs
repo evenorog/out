@@ -1,12 +1,4 @@
 //! Functions for use with iterators.
-//!
-//! # Examples
-//! ```
-//! let max = out::iter::max(-10..10, 3);
-//! assert_eq!(max, [9, 8, 7]);
-//! let min = out::iter::min(max, 10);
-//! assert_eq!(min, [7, 8, 9]);
-//! ```
 
 use alloc::vec::Vec;
 use core::cmp::Ordering;

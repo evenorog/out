@@ -13,6 +13,7 @@ fn slice_min() {
 }
 
 #[test]
+#[cfg(feature = "alloc")]
 fn iter_max() {
     let v = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let max = out::iter::max(v, 5);
@@ -20,6 +21,7 @@ fn iter_max() {
 }
 
 #[test]
+#[cfg(feature = "alloc")]
 fn iter_min() {
     let v = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let min = out::iter::min(v, 5);

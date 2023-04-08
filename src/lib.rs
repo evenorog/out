@@ -4,7 +4,7 @@
 //! let mut v = [-5, 4, 1, -3, 2];
 //! let max = out::slice::max(&mut v, 3);
 //! assert_eq!(max, [4, 2, 1]);
-//! assert_eq!(out::slice::min(max, 2), [1, 2]);
+//! assert_eq!(v, [4, 2, 1, -5, -3]);
 //! ```
 //!
 //! This library can provide significant performance increase compared to sorting or

@@ -1,16 +1,9 @@
 //! Functions for use with slices.
-//!
-//! # Examples
-//! ```
-//! let mut v = [-5, 4, 1, -3, 2];
-//! let max = out::slice::max(&mut v, 3);
-//! assert_eq!(max, [4, 2, 1]);
-//! assert_eq!(v, [4, 2, 1, -5, -3]);
-//! ```
 
 use core::{cmp::Ordering, mem};
 
 /// Implementation based on https://doc.rust-lang.org/std/primitive.slice.html#method.sort_by_cached_key.
+#[cfg(feature = "alloc")]
 macro_rules! find_n {
     ($t:ty, $slice:ident, $n:ident, $f: ident, $sort: expr) => {{
         let iter = $slice.iter().map($f).enumerate().map(|(i, k)| (k, i as $t));
