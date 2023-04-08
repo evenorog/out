@@ -1,24 +1,14 @@
 //! Functions for use with iterators.
-//!
-//! # Examples
-//! ```
-//! let max = out::iter::max(-10..10, 3);
-//! assert_eq!(max, [7, 8, 9]);
-//! let min = out::iter::min(max, 10);
-//! assert_eq!(min, [9, 8, 7]);
-//! ```
 
 use alloc::vec::Vec;
 use core::cmp::Ordering;
 
 /// Returns the `n` largest items from an iterator.
 ///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
 /// # Examples
 /// ```
 /// let max = out::iter::max(-10..10, 3);
-/// assert_eq!(max, [7, 8, 9]);
+/// assert_eq!(max, [9, 8, 7]);
 /// ```
 pub fn max<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
     max_by(iter, n, T::cmp)
@@ -26,12 +16,10 @@ pub fn max<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
 
 /// Returns the `n` smallest items from an iterator.
 ///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
 /// # Examples
 /// ```
 /// let min = out::iter::min(-10..10, 3);
-/// assert_eq!(min, [-8, -9, -10]);
+/// assert_eq!(min, [-10, -9, -8]);
 /// ```
 pub fn min<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
     min_by(iter, n, T::cmp)
@@ -39,12 +27,10 @@ pub fn min<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
 
 /// Returns the `n` largest items from an iterator with a comparator function.
 ///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
 /// # Examples
 /// ```
 /// let min = out::iter::max_by(-10_i32..10, 3, |a, b| b.cmp(a));
-/// assert_eq!(min, [-8, -9, -10]);
+/// assert_eq!(min, [-10, -9, -8]);
 /// ```
 pub fn max_by<T>(
     iter: impl IntoIterator<Item = T>,
@@ -55,38 +41,28 @@ pub fn max_by<T>(
         return Vec::new();
     }
 
-    let mut v = Vec::with_capacity(n);
-    let mut iter = iter.into_iter();
-    while v.len() < n {
-        let Some(item) = iter.next() else {
-            break;
-        };
-        v.push(item);
-    }
-
-    v.sort_by(&mut cmp);
-
-    for item in iter {
-        if cmp(&item, &v[0]).is_ge() {
-            v[0] = item;
-            let mut i = 0;
-            while i < n - 1 && cmp(&v[i], &v[i + 1]).is_ge() {
-                v.swap(i, i + 1);
-                i += 1;
-            }
+    let mut right = iter.into_iter();
+    let mut left = right.by_ref().take(n).collect::<Vec<_>>();
+    crate::make_min_heap(&mut left, &mut cmp);
+    // Same as `slice::max_by`.
+    for i in right {
+        let min = &mut left[0];
+        if cmp(&i, min).is_gt() {
+            *min = i;
+            crate::sift_down(&mut left, 0, &mut cmp);
         }
     }
-    v
+
+    crate::sort_min_heap(&mut left, &mut cmp);
+    left
 }
 
 /// Returns the `n` smallest items from an iterator with a comparator function.
 ///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
 /// # Examples
 /// ```
 /// let max = out::iter::min_by(-10_i32..10, 3, |a, b| b.cmp(a));
-/// assert_eq!(max, [7, 8, 9]);
+/// assert_eq!(max, [9, 8, 7]);
 /// ```
 pub fn min_by<T>(
     iter: impl IntoIterator<Item = T>,
@@ -98,12 +74,10 @@ pub fn min_by<T>(
 
 /// Returns the `n` largest items from an iterator with a key extraction function.
 ///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
 /// # Examples
 /// ```
 /// let max = out::iter::max_by_key(-10_i32..10, 3, |a| a.abs());
-/// assert_eq!(max, [-9, 9, -10]);
+/// assert_eq!(max, [-10, -9, 9]);
 /// ```
 pub fn max_by_key<T, K: Ord>(
     iter: impl IntoIterator<Item = T>,
@@ -115,12 +89,10 @@ pub fn max_by_key<T, K: Ord>(
 
 /// Returns the `n` smallest items from an iterator with a key extraction function.
 ///
-/// This function is stable, i.e. it preserves the order of equal elements.
-///
 /// # Examples
 /// ```
-/// let max = out::iter::min_by_key(-10_i32..10, 3, |a| a.abs());
-/// assert_eq!(max, [-1, 1, 0]);
+/// let min = out::iter::min_by_key(-10_i32..10, 3, |a| a.abs());
+/// assert_eq!(min, [0, -1, 1]);
 /// ```
 pub fn min_by_key<T, K: Ord>(
     iter: impl IntoIterator<Item = T>,
@@ -128,129 +100,4 @@ pub fn min_by_key<T, K: Ord>(
     mut f: impl FnMut(&T) -> K,
 ) -> Vec<T> {
     min_by(iter, n, |a, b| f(a).cmp(&f(b)))
-}
-
-/// Returns the `n` largest items from an iterator.
-///
-/// This function is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`max`].
-///
-/// # Examples
-/// ```
-/// let max = out::iter::max_unstable(-10..10, 3);
-/// assert_eq!(max, [7, 8, 9]);
-/// ```
-pub fn max_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
-    max_unstable_by(iter, n, T::cmp)
-}
-
-/// Returns the `n` smallest items from an iterator.
-///
-/// This function is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`min`].
-///
-/// # Examples
-/// ```
-/// let min = out::iter::min_unstable(-10..10, 3);
-/// assert_eq!(min, [-8, -9, -10]);
-/// ```
-pub fn min_unstable<T: Ord>(iter: impl IntoIterator<Item = T>, n: usize) -> Vec<T> {
-    min_unstable_by(iter, n, T::cmp)
-}
-
-/// Returns the `n` largest items from an iterator with a comparator function.
-///
-/// This function is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`max_by`].
-///
-/// # Examples
-/// ```
-/// let min = out::iter::max_unstable_by(-10..10, 3, |a, b| b.cmp(a));
-/// assert_eq!(min, [-8, -9, -10]);
-/// ```
-pub fn max_unstable_by<T>(
-    iter: impl IntoIterator<Item = T>,
-    n: usize,
-    mut cmp: impl FnMut(&T, &T) -> Ordering,
-) -> Vec<T> {
-    if n == 0 {
-        return Vec::new();
-    }
-
-    let mut v = Vec::with_capacity(n);
-    let mut iter = iter.into_iter();
-    while v.len() < n {
-        let Some(item) = iter.next() else {
-            break;
-        };
-        v.push(item);
-    }
-
-    v.sort_unstable_by(&mut cmp);
-
-    for item in iter {
-        if cmp(&item, &v[0]).is_gt() {
-            v[0] = item;
-            let mut i = 0;
-            while i < n - 1 && cmp(&v[i], &v[i + 1]).is_gt() {
-                v.swap(i, i + 1);
-                i += 1;
-            }
-        }
-    }
-    v
-}
-
-/// Returns the `n` smallest items from an iterator with a comparator function.
-///
-/// This function is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`min_by`].
-///
-/// # Examples
-/// ```
-/// let max = out::iter::min_unstable_by(-10..10, 3, |a, b| b.cmp(a));
-/// assert_eq!(max, [7, 8, 9]);
-/// ```
-pub fn min_unstable_by<T>(
-    iter: impl IntoIterator<Item = T>,
-    n: usize,
-    mut cmp: impl FnMut(&T, &T) -> Ordering,
-) -> Vec<T> {
-    max_unstable_by(iter, n, |a, b| cmp(b, a))
-}
-
-/// Returns the `n` largest items from an iterator with a key extraction function.
-///
-/// This function is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`max_by_key`].
-///
-/// # Examples
-/// ```
-/// let max = out::iter::max_unstable_by_key(-10_i32..10, 3, |a| a.abs());
-/// assert_eq!(max, [9, -9, -10]);
-/// ```
-pub fn max_unstable_by_key<T, K: Ord>(
-    iter: impl IntoIterator<Item = T>,
-    n: usize,
-    mut f: impl FnMut(&T) -> K,
-) -> Vec<T> {
-    max_unstable_by(iter, n, |a, b| f(a).cmp(&f(b)))
-}
-
-/// Returns the `n` smallest items from an iterator with a key extraction function.
-///
-/// This function is unstable (i.e. may reorder equal elements)
-/// and typically faster than [`min_by_key`].
-///
-/// # Examples
-/// ```
-/// let min = out::iter::min_unstable_by_key(-10_i32..10, 3, |a| a.abs());
-/// assert_eq!(min, [1, -1, 0]);
-/// ```
-pub fn min_unstable_by_key<T, K: Ord>(
-    iter: impl IntoIterator<Item = T>,
-    n: usize,
-    mut f: impl FnMut(&T) -> K,
-) -> Vec<T> {
-    min_unstable_by(iter, n, |a, b| f(a).cmp(&f(b)))
 }

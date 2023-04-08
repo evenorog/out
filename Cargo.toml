@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "7.0.0"
+version = "8.0.0"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides fast min and max functionality for collections."
 documentation = "https://docs.rs/out"

@@ -4,10 +4,10 @@ extern crate test;
 
 use rand::prelude::*;
 
-const N: usize = 100;
+const N: usize = 1000;
 const LEN: usize = 1_000_000;
 
-fn create_random_vec() -> Vec<i32> {
+fn rng_vec() -> Vec<i32> {
     let mut rng = SmallRng::seed_from_u64(0);
     let mut v: Vec<_> = (0..LEN as i32).collect();
     v.shuffle(&mut rng);
@@ -15,11 +15,11 @@ fn create_random_vec() -> Vec<i32> {
 }
 
 mod slice {
-    use crate::{create_random_vec, N};
+    use crate::{rng_vec, N};
 
     #[bench]
     fn max(b: &mut test::Bencher) {
-        let v = create_random_vec();
+        let v = rng_vec();
         b.iter(|| {
             let mut v = v.clone();
             test::black_box(out::slice::max(&mut v, N));
@@ -27,30 +27,42 @@ mod slice {
     }
 
     #[bench]
-    fn max_unstable(b: &mut test::Bencher) {
-        let v = create_random_vec();
+    fn min(b: &mut test::Bencher) {
+        let v = rng_vec();
         b.iter(|| {
             let mut v = v.clone();
-            test::black_box(out::slice::max_unstable(&mut v, N));
+            test::black_box(out::slice::min(&mut v, N));
         });
     }
 
     #[bench]
+    #[cfg(feature = "alloc")]
     fn max_by_cached_key(b: &mut test::Bencher) {
-        let v = create_random_vec();
+        let v = rng_vec();
         b.iter(|| {
             let mut v = v.clone();
             test::black_box(out::slice::max_by_cached_key(&mut v, N, |&a| a));
         });
     }
+
+    #[bench]
+    #[cfg(feature = "alloc")]
+    fn min_by_cached_key(b: &mut test::Bencher) {
+        let v = rng_vec();
+        b.iter(|| {
+            let mut v = v.clone();
+            test::black_box(out::slice::min_by_cached_key(&mut v, N, |&a| a));
+        });
+    }
 }
 
+#[cfg(feature = "alloc")]
 mod iter {
-    use crate::{create_random_vec, N};
+    use crate::{rng_vec, N};
 
     #[bench]
     fn max(b: &mut test::Bencher) {
-        let v = create_random_vec();
+        let v = rng_vec();
         b.iter(|| {
             let v = v.clone();
             test::black_box(out::iter::max(v, N));
@@ -58,22 +70,22 @@ mod iter {
     }
 
     #[bench]
-    fn max_unstable(b: &mut test::Bencher) {
-        let v = create_random_vec();
+    fn min(b: &mut test::Bencher) {
+        let v = rng_vec();
         b.iter(|| {
             let v = v.clone();
-            test::black_box(out::iter::max_unstable(v, N));
+            test::black_box(out::iter::min(v, N));
         });
     }
 }
 
 mod std {
-    use crate::{create_random_vec, N};
+    use crate::{rng_vec, N};
     use std::collections::BinaryHeap;
 
     #[bench]
     fn sort(b: &mut test::Bencher) {
-        let v = create_random_vec();
+        let v = rng_vec();
         b.iter(|| {
             let mut v = v.clone();
             v.sort();
@@ -83,7 +95,7 @@ mod std {
 
     #[bench]
     fn sort_unstable(b: &mut test::Bencher) {
-        let v = create_random_vec();
+        let v = rng_vec();
         b.iter(|| {
             let mut v = v.clone();
             v.sort_unstable();
@@ -93,7 +105,7 @@ mod std {
 
     #[bench]
     fn sort_by_cached_key(b: &mut test::Bencher) {
-        let v = create_random_vec();
+        let v = rng_vec();
         b.iter(|| {
             let mut v = v.clone();
             v.sort_by_cached_key(|&a| a);
@@ -103,7 +115,7 @@ mod std {
 
     #[bench]
     fn binary_heap(b: &mut test::Bencher) {
-        let v = create_random_vec();
+        let v = rng_vec();
         b.iter(|| {
             let heap = BinaryHeap::from(v.clone());
             test::black_box(heap.into_iter().take(N).collect::<Vec<_>>());
