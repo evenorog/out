@@ -1,6 +1,6 @@
 [package]
 name = "out"
-version = "8.0.0"
+version = "8.0.1"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "Provides fast min and max functionality for collections."
 documentation = "https://docs.rs/out"
@@ -9,7 +9,7 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["min", "max", "iterator", "slice"]
 categories = ["algorithms", "no-std"]
-edition = "2021"
+edition = "2024"
 
 [features]
 default = ["std"]
@@ -20,6 +20,6 @@ alloc = []
 maintenance = { status = "passively-maintained" }
 
 [dev-dependencies]
-rand = { version = "0.8", features = ["small_rng"]}
+rand = { version = "0.9.0", features = ["small_rng"]}
 quickcheck = "1"
 quickcheck_macros = "1"
