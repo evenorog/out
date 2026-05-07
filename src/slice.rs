@@ -66,6 +66,11 @@ pub fn max_by<T>(v: &mut [T], n: usize, mut cmp: impl FnMut(&T, &T) -> Ordering)
         return &mut [];
     }
 
+    if n >= v.len() {
+        v.sort_unstable_by(|a, b| cmp(b, a));
+        return v;
+    }
+
     let (left, right) = v.split_at_mut(n);
     crate::make_min_heap(left, &mut cmp);
     // Since the smallest element is the root of the heap now

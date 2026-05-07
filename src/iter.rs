@@ -42,7 +42,8 @@ pub fn max_by<T>(
     }
 
     let mut right = iter.into_iter();
-    let mut left = right.by_ref().take(n).collect::<Vec<_>>();
+    let mut left = Vec::with_capacity(n);
+    left.extend(right.by_ref().take(n));
     crate::make_min_heap(&mut left, &mut cmp);
     // Same as `slice::max_by`.
     for i in right {

@@ -8,7 +8,7 @@ const N: usize = 1000;
 const LEN: usize = 1_000_000;
 
 fn rng_vec() -> Vec<i32> {
-    let mut rng = SmallRng::seed_from_u64(0);
+    let mut rng = StdRng::seed_from_u64(0);
     let mut v: Vec<_> = (0..LEN as i32).collect();
     v.shuffle(&mut rng);
     v
